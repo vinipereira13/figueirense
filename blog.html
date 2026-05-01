@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Figueirense Arquivo de Camisas</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f5f5f3;
+  --white:#ffffff;
+  --black:#0a0a0a;
+  --grey-1:#1a1a1a;
+  --grey-2:#333333;
+  --grey-3:#666666;
+  --grey-4:#999999;
+  --grey-5:#cccccc;
+  --grey-6:#e8e8e6;
+  --grey-7:#f0f0ee;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--black);overflow-x:hidden;}
+
+/* ── HEADER ── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:64px;
+  background:rgba(245,245,243,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--grey-6);
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-crest{width:30px;height:30px;border:1.5px solid var(--grey-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--black);}
+.logo-text{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--black);}
+.logo-sub{font-size:8px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--grey-4);display:block;margin-top:1px;}
+nav{display:flex;gap:24px;align-items:center;}
+nav a{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-3);text-decoration:none;transition:color .2s;}
+nav a:hover{color:var(--black);}
+nav a.active{color:var(--black);font-weight:600;}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-3);text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:var(--black);}
+.nav-back::before{content:'←';font-size:12px;}
+
+/* ── HERO BLOG ── */
+.blog-hero{
+  padding:120px 48px 64px;
+  background:var(--white);
+  border-bottom:1px solid var(--grey-6);
+  position:relative;
+  overflow:hidden;
+}
+.blog-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background-image:linear-gradient(var(--grey-6) 1px,transparent 1px),linear-gradient(90deg,var(--grey-6) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
+  opacity:.4;
+}
+.blog-hero-label{font-size:10px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--grey-4);margin-bottom:16px;display:flex;align-items:center;gap:10px;position:relative;}
+.blog-hero-label::before{content:'';width:28px;height:1px;background:var(--grey-4);}
+.blog-hero-title{font-size:clamp(40px,6vw,80px);font-weight:800;color:var(--black);letter-spacing:-.03em;line-height:.9;margin-bottom:20px;position:relative;}
+.blog-hero-desc{font-size:14px;font-weight:300;color:var(--grey-3);line-height:1.8;max-width:480px;position:relative;}
+
+/* ── ARTICLE GRID ── */
+.articles-section{padding:64px 48px 96px;}
+.articles-count{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-4);margin-bottom:40px;}
+
+.articles-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:24px;
+}
+
+/* featured first article — full width */
+.article-card{
+  background:var(--white);
+  border:1px solid var(--grey-6);
+  border-radius:3px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .25s,transform .25s,box-shadow .25s;
+  text-decoration:none;
+  color:inherit;
+  display:flex;
+  flex-direction:column;
+}
+.article-card:hover{
+  border-color:var(--grey-4);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,.08);
+}
+.article-card.featured{
+  grid-column:1/-1;
+  flex-direction:row;
+  max-height:360px;
+}
+
+.article-img{
+  width:100%;
+  aspect-ratio:16/9;
+  background:var(--grey-7);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.article-card.featured .article-img{
+  width:48%;
+  aspect-ratio:auto;
+}
+.article-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.article-card:hover .article-img img{transform:scale(1.03);}
+.article-img-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;opacity:.3;
+  background:linear-gradient(135deg,var(--grey-7) 0%,var(--grey-6) 100%);
+}
+
+.article-body{padding:28px 28px 24px;display:flex;flex-direction:column;gap:12px;flex:1;}
+.article-card.featured .article-body{padding:40px 40px 32px;}
+
+.article-tag{
+  display:inline-block;padding:3px 10px;
+  background:var(--black);color:var(--white);
+  font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  border-radius:1px;align-self:flex-start;
+}
+.article-title{
+  font-size:18px;font-weight:700;color:var(--black);
+  line-height:1.25;letter-spacing:-.01em;
+}
+.article-card.featured .article-title{font-size:26px;}
+.article-sub{font-size:13px;font-weight:300;color:var(--grey-3);line-height:1.65;}
+.article-meta{
+  display:flex;align-items:center;gap:12px;margin-top:auto;
+  padding-top:16px;border-top:1px solid var(--grey-6);
+}
+.article-author{font-size:11px;font-weight:500;color:var(--grey-2);}
+.article-author-ig{font-size:10px;font-weight:400;color:var(--grey-4);}
+.article-date{font-size:10px;font-weight:400;color:var(--grey-4);margin-left:auto;}
+
+/* empty state */
+.empty-blog{
+  grid-column:1/-1;text-align:center;padding:80px 0;
+}
+.empty-blog-icon{font-size:48px;margin-bottom:16px;opacity:.2;}
+.empty-blog-title{font-size:18px;font-weight:700;color:var(--grey-2);margin-bottom:8px;}
+.empty-blog-desc{font-size:13px;font-weight:300;color:var(--grey-4);}
+
+/* ── ARTICLE SINGLE VIEW ── */
+#article-view{display:none;min-height:100vh;}
+.article-view-hero{
+  padding:100px 48px 48px;
+  background:var(--white);
+  border-bottom:1px solid var(--grey-6);
+}
+.article-view-back{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--grey-4);text-decoration:none;margin-bottom:32px;
+  cursor:pointer;transition:color .2s;border:none;background:none;font-family:'Sora',sans-serif;
+}
+.article-view-back:hover{color:var(--black);}
+.article-view-back::before{content:'←';}
+.article-view-tag{display:inline-block;padding:3px 10px;background:var(--black);color:var(--white);font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;border-radius:1px;margin-bottom:20px;}
+.article-view-title{font-size:clamp(28px,5vw,56px);font-weight:800;color:var(--black);line-height:.95;letter-spacing:-.03em;margin-bottom:16px;}
+.article-view-sub{font-size:16px;font-weight:300;color:var(--grey-3);line-height:1.7;margin-bottom:28px;max-width:640px;}
+.article-view-meta{display:flex;align-items:center;gap:16px;}
+.avm-author{font-size:12px;font-weight:600;color:var(--grey-2);}
+.avm-ig{font-size:11px;color:var(--grey-4);}
+.avm-dot{width:3px;height:3px;border-radius:50%;background:var(--grey-5);}
+.avm-date{font-size:11px;color:var(--grey-4);}
+
+.article-view-img{width:100%;max-height:520px;overflow:hidden;background:var(--grey-7);}
+.article-view-img img{width:100%;height:100%;object-fit:cover;display:block;}
+
+.article-view-content{
+  max-width:720px;margin:0 auto;
+  padding:56px 48px 96px;
+  font-size:16px;font-weight:300;line-height:1.85;color:var(--grey-2);
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+/* ── FOOTER ── */
+footer{
+  padding:32px 48px;background:var(--grey-7);
+  border-top:1px solid var(--grey-6);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-copy{font-size:10px;font-weight:300;color:var(--grey-4);}
+.footer-link{font-size:10px;color:var(--grey-3);text-decoration:none;letter-spacing:.1em;transition:color .2s;}
+.footer-link:hover{color:var(--black);}
+
+/* loading */
+#blog-loading{
+  position:fixed;top:0;left:0;right:0;height:2px;
+  background:var(--black);z-index:9999;
+  width:0;transition:width .4s ease;
+}
+
+@media(max-width:768px){
+  header{padding:0 20px;}
+  nav{display:none;}
+  .blog-hero{padding:100px 20px 48px;}
+  .articles-section{padding:40px 20px 64px;}
+  .articles-grid{grid-template-columns:1fr;gap:16px;}
+  .article-card.featured{flex-direction:column;max-height:none;}
+  .article-card.featured .article-img{width:100%;}
+  .article-view-hero{padding:90px 20px 36px;}
+  .article-view-content{padding:36px 20px 64px;}
+  footer{flex-direction:column;gap:12px;padding:24px 20px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div id="blog-loading"></div>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="figueirense-camisas.html">
+    <div class="logo-crest">FFC</div>
+    <div>
+      <span class="logo-text">Figueirense</span>
+      <span class="logo-sub">Arquivo de Camisas</span>
+    </div>
+  </a>
+  <nav>
+    <a href="figueirense-camisas.html">Coleção</a>
+    <a href="blog.html" class="active">Blog</a>
+  </nav>
+</header>
+
+<!-- LIST VIEW -->
+<div id="list-view">
+  <section class="blog-hero">
+    <div class="blog-hero-label">Histórias & Memórias</div>
+    <h1 class="blog-hero-title">O arquivo<br>que a torcida<br>escreve.</h1>
+    <p class="blog-hero-desc">Colecionadores, ex-patrocinadores, torcedores e pesquisadores contam as histórias por trás das camisas do Figueirense.</p>
+  </section>
+
+  <section class="articles-section">
+    <div class="articles-count" id="articles-count">Carregando...</div>
+    <div class="articles-grid" id="articles-grid"></div>
+  </section>
+</div>
+
+<!-- SINGLE ARTICLE VIEW -->
+<div id="article-view">
+  <section class="article-view-hero" id="av-hero"></section>
+  <div class="article-view-img" id="av-img" style="display:none"></div>
+  <div class="article-view-content" id="av-content"></div>
+</div>
+
+<footer>
+  <span class="footer-copy">© 2024 Arquivo Figueirense · Feito pela torcida, para a torcida</span>
+  <a class="footer-link" href="figueirense-camisas.html">← Voltar ao acervo</a>
+</footer>
+
+<script>
+const SB_URL = 'https://tuwgszmpuysyuybutuxd.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1d2dzem1wdXlzeXV5YnV0dXhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTk1NjgsImV4cCI6MjA5MzEzNTU2OH0.r-W0JkF48ttWFOIfEwNZn-Dc-mTt4dTOi8YPLUx7L-4';
+const SB_H   = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` };
+
+let artigos = [];
+
+function loading(on) {
+  document.getElementById('blog-loading').style.width = on ? '70%' : '0';
+}
+
+function formatDate(dt) {
+  return new Date(dt).toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+async function loadArtigos() {
+  loading(true);
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/artigos?publicado=eq.true&order=criado_em.desc`, { headers: SB_H });
+    artigos = await res.json();
+    renderList();
+  } catch(e) {
+    document.getElementById('articles-grid').innerHTML = `<div class="empty-blog"><div class="empty-blog-icon">📰</div><div class="empty-blog-title">Erro ao carregar</div><div class="empty-blog-desc">${e.message}</div></div>`;
+  } finally {
+    loading(false);
+  }
+}
+
+function renderList() {
+  const count = artigos.length;
+  document.getElementById('articles-count').textContent =
+    count === 0 ? 'Nenhum artigo publicado ainda' : `${count} artigo${count !== 1 ? 's' : ''}`;
+
+  if (!count) {
+    document.getElementById('articles-grid').innerHTML = `
+      <div class="empty-blog">
+        <div class="empty-blog-icon">✍️</div>
+        <div class="empty-blog-title">Seja o primeiro a escrever</div>
+        <div class="empty-blog-desc">Tem uma história para contar sobre uma camisa do Figueirense?<br>Entre em contato e publique no arquivo.</div>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('articles-grid').innerHTML = artigos.map((a, i) => {
+    const featured = i === 0;
+    const imgHtml = a.foto_url
+      ? `<img src="${a.foto_url}" alt="${a.titulo}">`
+      : `<div class="article-img-placeholder">📰</div>`;
+    return `
+      <div class="article-card${featured ? ' featured' : ''}" onclick="openArticle('${a.id}')">
+        <div class="article-img">${imgHtml}</div>
+        <div class="article-body">
+          <span class="article-tag">Artigo</span>
+          <div class="article-title">${a.titulo}</div>
+          ${a.subtitulo ? `<div class="article-sub">${a.subtitulo}</div>` : ''}
+          <div class="article-meta">
+            <div>
+              <div class="article-author">${a.autor}</div>
+              ${a.autor_instagram ? `<div class="article-author-ig">@${a.autor_instagram}</div>` : ''}
+            </div>
+            <div class="article-date">${formatDate(a.criado_em)}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openArticle(id) {
+  const a = artigos.find(x => x.id === id);
+  if (!a) return;
+
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('article-view').style.display = 'block';
+  window.scrollTo(0, 0);
+
+  document.getElementById('av-hero').innerHTML = `
+    <button class="article-view-back" onclick="backToList()"> Voltar</button>
+    <div class="article-view-tag">Artigo</div>
+    <h1 class="article-view-title">${a.titulo}</h1>
+    ${a.subtitulo ? `<p class="article-view-sub">${a.subtitulo}</p>` : ''}
+    <div class="article-view-meta">
+      <span class="avm-author">${a.autor}</span>
+      ${a.autor_instagram ? `<span class="avm-ig">@${a.autor_instagram}</span>` : ''}
+      <span class="avm-dot"></span>
+      <span class="avm-date">${formatDate(a.criado_em)}</span>
+    </div>`;
+
+  const imgEl = document.getElementById('av-img');
+  if (a.foto_url) {
+    imgEl.style.display = 'block';
+    imgEl.innerHTML = `<img src="${a.foto_url}" alt="${a.titulo}">`;
+  } else {
+    imgEl.style.display = 'none';
+  }
+
+  document.getElementById('av-content').textContent = a.conteudo;
+}
+
+function backToList() {
+  document.getElementById('article-view').style.display = 'none';
+  document.getElementById('list-view').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+// Handle URL hash for direct link to article
+const hash = window.location.hash.replace('#', '');
+
+loadArtigos().then(() => {
+  if (hash) openArticle(hash);
+});
+</script>
+</body>
+</html>

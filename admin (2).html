@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Arquivo Figueirense</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --black:#000;--black-2:#0a0a0a;--black-3:#111;--black-4:#1a1a1a;--black-5:#222;
+  --grey-dim:#2e2e2e;--grey-mid:#555;--grey-light:#888;
+  --white:#fff;--white-dim:rgba(255,255,255,.07);
+  --green:#22c55e;--green-dim:rgba(34,197,94,.12);
+  --red:#ef4444;--red-dim:rgba(239,68,68,.12);
+  --blue:#3b82f6;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--black-2);color:var(--white);min-height:100vh;}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:32px;}
+.login-box{width:360px;padding:40px;background:var(--black-3);border:1px solid rgba(255,255,255,.08);border-radius:4px;}
+.login-logo{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;}
+.login-title{font-size:22px;font-weight:700;color:var(--white);margin-bottom:28px;}
+.login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.login-field label{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-mid);}
+.login-field input{padding:10px 14px;background:var(--black-4);border:1px solid rgba(255,255,255,.08);border-radius:2px;font-family:'Sora',sans-serif;font-size:13px;color:var(--white);outline:none;transition:border-color .2s;}
+.login-field input:focus{border-color:rgba(255,255,255,.2);}
+.btn-login{width:100%;padding:12px;background:var(--white);color:var(--black);font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;border-radius:2px;cursor:pointer;margin-top:8px;transition:opacity .2s;}
+.btn-login:hover{opacity:.9;}
+.login-error{font-size:11px;color:var(--red);text-align:center;min-height:16px;}
+
+/* LAYOUT */
+#app{display:none;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--black-3);border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.06);}
+.sidebar-logo-main{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--white);}
+.sidebar-logo-sub{font-size:9px;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:var(--grey-mid);margin-top:2px;}
+.sidebar-badge{display:inline-block;padding:2px 7px;background:var(--green-dim);border:1px solid rgba(34,197,94,.2);border-radius:10px;font-size:8px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-top:8px;}
+.nav-section{padding:16px 12px 8px;font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:1px 4px;border-radius:2px;font-size:11px;font-weight:500;color:var(--grey-light);cursor:pointer;transition:all .15s;border:none;background:transparent;width:calc(100% - 8px);text-align:left;font-family:'Sora',sans-serif;}
+.nav-item:hover{background:var(--white-dim);color:var(--white);}
+.nav-item.active{background:rgba(255,255,255,.1);color:var(--white);}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.6;}
+.nav-item.active svg{opacity:1;}
+.sidebar-bottom{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.06);}
+.btn-logout{width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--grey-mid);font-family:'Sora',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:var(--red);color:var(--red);}
+
+/* MAIN */
+.main{margin-left:220px;min-height:100vh;}
+.topbar{padding:0 32px;height:60px;background:var(--black-3);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:13px;font-weight:600;color:var(--white);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.content{padding:32px;}
+
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.stat-card{background:var(--black-3);border:1px solid rgba(255,255,255,.06);border-radius:3px;padding:20px 24px;}
+.stat-card-n{font-size:32px;font-weight:800;color:var(--white);letter-spacing:-.02em;line-height:1;}
+.stat-card-l{font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--grey-mid);margin-top:6px;}
+
+/* TABLES */
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.table-title{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+.table-wrap{background:var(--black-3);border:1px solid rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 16px;font-size:8px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--grey-mid);text-align:left;border-bottom:1px solid rgba(255,255,255,.06);}
+td{padding:12px 16px;font-size:12px;color:rgba(255,255,255,.8);border-bottom:1px solid rgba(255,255,255,.04);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--white-dim);}
+.td-actions{display:flex;gap:6px;}
+.btn-sm{padding:4px 10px;font-family:'Sora',sans-serif;font-size:9px;font-weight:500;letter-spacing:.08em;border-radius:1px;cursor:pointer;border:1px solid;transition:all .15s;}
+.btn-edit{background:transparent;border-color:rgba(255,255,255,.12);color:var(--grey-light);}
+.btn-edit:hover{border-color:rgba(255,255,255,.25);color:var(--white);}
+.btn-delete{background:transparent;border-color:rgba(239,68,68,.2);color:var(--red);}
+.btn-delete:hover{background:var(--red-dim);}
+.badge{padding:2px 8px;border-radius:1px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.badge-i{background:rgba(255,255,255,.85);color:#000;}
+.badge-ii{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);}
+.badge-iii{background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);}
+.badge-gk{background:rgba(255,140,0,.15);color:#ffb347;border:1px solid rgba(255,140,0,.25);}
+.badge-on{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.badge-off{background:rgba(255,255,255,.04);color:var(--grey-mid);border:1px solid rgba(255,255,255,.08);}
+
+/* FORM MODAL */
+.form-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:flex-start;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px);}
+.form-overlay.open{opacity:1;pointer-events:all;}
+.form-drawer{width:560px;max-width:95vw;height:100vh;background:var(--black-3);border-left:1px solid rgba(255,255,255,.08);overflow-y:auto;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.form-overlay.open .form-drawer{transform:translateX(0);}
+.form-head{padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;background:var(--black-3);z-index:10;}
+.form-head-title{font-size:14px;font-weight:700;color:var(--white);}
+.form-close{width:32px;height:32px;background:var(--white-dim);border:none;color:var(--white);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:1px;transition:background .2s;}
+.form-close:hover{background:rgba(255,255,255,.12);}
+.form-body{padding:28px;flex:1;}
+.form-section{margin-bottom:28px;}
+.form-section-title{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.04);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-row.full{grid-template-columns:1fr;}
+.form-field{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--grey-mid);}
+.form-label span{color:var(--red);margin-left:2px;}
+.form-input,.form-select,.form-textarea{padding:10px 13px;background:var(--black-4);border:1px solid rgba(255,255,255,.08);border-radius:2px;font-family:'Sora',sans-serif;font-size:12px;color:var(--white);outline:none;transition:border-color .2s;width:100%;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(255,255,255,.25);}
+.form-select option{background:var(--black-3);}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.6;}
+.form-hint{font-size:10px;color:var(--grey-mid);margin-top:3px;}
+
+/* FOTO UPLOAD */
+.upload-zone{border:1.5px dashed rgba(255,255,255,.12);border-radius:3px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.upload-zone:hover,.upload-zone.dragover{border-color:rgba(255,255,255,.3);background:var(--white-dim);}
+.upload-zone-icon{font-size:28px;margin-bottom:8px;opacity:.4;}
+.upload-zone-text{font-size:12px;color:var(--grey-light);}
+.upload-zone-hint{font-size:10px;color:var(--grey-mid);margin-top:4px;}
+#file-input{display:none;}
+.photos-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.photo-thumb{position:relative;width:80px;height:96px;background:var(--black-4);border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.photo-thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;opacity:0;transition:opacity .2s;}
+.photo-thumb:hover .photo-thumb-overlay{opacity:1;}
+.photo-main-badge{position:absolute;top:4px;left:4px;padding:1px 5px;background:var(--green);color:#000;font-size:7px;font-weight:700;letter-spacing:.08em;border-radius:1px;}
+.photo-btn{padding:3px 7px;font-size:8px;font-weight:600;border-radius:1px;border:none;cursor:pointer;font-family:'Sora',sans-serif;}
+.photo-btn-main{background:var(--green);color:#000;}
+.photo-btn-del{background:var(--red);color:#fff;}
+
+/* FORM FOOTER */
+.form-footer{padding:20px 28px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:10px;background:var(--black-3);position:sticky;bottom:0;}
+.btn-primary{padding:11px 24px;background:var(--white);color:var(--black);font-family:'Sora',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;border-radius:2px;cursor:pointer;transition:opacity .2s;}
+.btn-primary:hover{opacity:.9;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-secondary{padding:11px 20px;background:transparent;color:var(--grey-light);font-family:'Sora',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(255,255,255,.1);border-radius:2px;cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:rgba(255,255,255,.2);color:var(--white);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--black-3);border:1px solid rgba(255,255,255,.1);border-radius:3px;font-size:12px;font-weight:500;color:var(--white);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:10px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(34,197,94,.3);}
+.toast.error{border-color:rgba(239,68,68,.3);}
+
+/* SVG LOGO UPLOAD */
+.svg-upload-area{border:1.5px dashed rgba(255,255,255,.12);border-radius:3px;padding:20px;cursor:pointer;transition:border-color .2s,background .2s;text-align:center;}
+.svg-upload-area:hover,.svg-upload-area.dragover{border-color:rgba(255,255,255,.3);background:var(--white-dim);}
+.svg-upload-area input[type=file]{display:none;}
+.svg-upload-label{font-size:11px;color:var(--grey-light);margin-bottom:4px;}
+.svg-upload-hint{font-size:9px;color:var(--grey-mid);}
+.svg-logos-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.svg-logo-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--black-4);border:1px solid rgba(255,255,255,.07);border-radius:2px;}
+.svg-logo-preview{width:80px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--black-5);border-radius:1px;flex-shrink:0;overflow:hidden;}
+.svg-logo-preview svg{max-width:76px;max-height:32px;width:auto;height:auto;}
+.svg-logo-info{flex:1;min-width:0;}
+.svg-logo-name{font-size:11px;font-weight:500;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.svg-logo-size{font-size:9px;color:var(--grey-mid);margin-top:2px;}
+.svg-logo-actions{display:flex;gap:6px;flex-shrink:0;}
+.svg-main-badge{padding:2px 7px;background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.2);border-radius:1px;font-size:8px;font-weight:600;letter-spacing:.08em;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* EMPTY */
+.empty{padding:48px;text-align:center;color:var(--grey-mid);font-size:12px;}
+.empty strong{display:block;font-size:22px;font-weight:800;color:rgba(255,255,255,.05);margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Figueirense FC</div>
+    <div class="login-title">Painel Admin</div>
+    <div class="form-field" style="margin-bottom:14px">
+      <label class="form-label">Usuário</label>
+      <input class="form-input" type="text" id="login-user" placeholder="admin" autocomplete="off">
+    </div>
+    <div class="form-field" style="margin-bottom:20px">
+      <label class="form-label">Senha</label>
+      <input class="form-input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-main">FFC Admin</div>
+      <div class="sidebar-logo-sub">Arquivo de Camisas</div>
+      <div class="sidebar-badge">● Online</div>
+    </div>
+    <div class="nav-section">Acervo</div>
+    <button class="nav-item active" onclick="showPanel('camisas',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg>
+      Camisas
+    </button>
+    <button class="nav-item" onclick="showPanel('fotos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Fotos
+    </button>
+    <div class="nav-section">Cadastros</div>
+    <button class="nav-item" onclick="showPanel('fornecedoras',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      Fornecedoras
+    </button>
+    <button class="nav-item" onclick="showPanel('patrocinadores',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Patrocinadores
+    </button>
+    <button class="nav-item" onclick="showPanel('contribuidores',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Contribuidores
+    </button>
+    <div class="nav-section">Conteúdo</div>
+    <button class="nav-item" onclick="showPanel('blog',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Blog
+    </button>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="topbar-title">Camisas</span>
+      <div class="topbar-right">
+        <button class="btn-primary" id="btn-novo">+ Nova Camisa</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- PANEL: CAMISAS -->
+      <div class="panel active" id="panel-camisas">
+        <div class="stats-row" id="stats-row">
+          <div class="stat-card"><div class="stat-card-n" id="stat-total">—</div><div class="stat-card-l">Total de camisas</div></div>
+          <div class="stat-card"><div class="stat-card-n" id="stat-pub">—</div><div class="stat-card-l">Publicadas</div></div>
+          <div class="stat-card"><div class="stat-card-n" id="stat-fotos">—</div><div class="stat-card-l">Com foto</div></div>
+          <div class="stat-card"><div class="stat-card-n" id="stat-contribuidores">—</div><div class="stat-card-l">Contribuidores</div></div>
+        </div>
+        <div class="table-header">
+          <span class="table-title">Todas as Camisas</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Ano</th><th>Nome</th><th>Tipo</th><th>Fornecedora</th><th>Patrocinador</th><th>Fotos</th><th>Status</th><th>Ações</th>
+            </tr></thead>
+            <tbody id="tb-camisas"><tr><td colspan="8" class="empty">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL: FOTOS -->
+      <div class="panel" id="panel-fotos">
+        <div class="table-header">
+          <span class="table-title">Fotos por Camisa</span>
+        </div>
+        <div id="fotos-content"><p class="empty"><strong>📷</strong>Selecione uma camisa para gerenciar as fotos</p></div>
+      </div>
+
+      <!-- PANEL: FORNECEDORAS -->
+      <div class="panel" id="panel-fornecedoras">
+        <div class="table-header">
+          <span class="table-title">Fornecedoras</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nome</th><th>Período</th><th>Camisas</th><th>Ações</th></tr></thead>
+            <tbody id="tb-fornecedoras"><tr><td colspan="4" class="empty">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL: PATROCINADORES -->
+      <div class="panel" id="panel-patrocinadores">
+        <div class="table-header">
+          <span class="table-title">Patrocinadores</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nome</th><th>Camisas</th><th>Ações</th></tr></thead>
+            <tbody id="tb-patrocinadores"><tr><td colspan="3" class="empty">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL: CONTRIBUIDORES -->
+      <div class="panel" id="panel-contribuidores">
+        <div class="table-header">
+          <span class="table-title">Contribuidores</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nome</th><th>Instagram</th><th>Camisas</th><th>Ações</th></tr></thead>
+            <tbody id="tb-contribuidores"><tr><td colspan="4" class="empty">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL: BLOG -->
+      <div class="panel" id="panel-blog">
+        <div class="table-header">
+          <span class="table-title">Artigos do Blog</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Título</th><th>Autor</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tb-blog"><tr><td colspan="5" class="empty">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- FORM DRAWER -->
+<div class="form-overlay" id="form-overlay" onclick="handleOverlayClick(event)">
+  <div class="form-drawer" id="form-drawer">
+    <div class="form-head">
+      <span class="form-head-title" id="form-head-title">Nova Camisa</span>
+      <button class="form-close" onclick="closeForm()">✕</button>
+    </div>
+    <div class="form-body" id="form-body"><!-- preenchido via JS --></div>
+    <div class="form-footer">
+      <button class="btn-primary" id="btn-salvar" onclick="salvarForm()">Salvar</button>
+      <button class="btn-secondary" onclick="closeForm()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════
+const SUPABASE_URL = 'https://tuwgszmpuysyuybutuxd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1d2dzem1wdXlzeXV5YnV0dXhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTk1NjgsImV4cCI6MjA5MzEzNTU2OH0.r-W0JkF48ttWFOIfEwNZn-Dc-mTt4dTOi8YPLUx7L-4';
+const ADMIN_USER   = 'admin';
+const ADMIN_PASS   = 'ffc@2024'; // TROQUE ESTA SENHA
+
+const HEADERS = {
+  'Content-Type':  'application/json',
+  'apikey':        SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Prefer':        'return=representation',
+};
+
+// ═══════════════════════════════════
+// API helpers
+// ═══════════════════════════════════
+async function api(path, method='GET', body=null) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    method,
+    headers: HEADERS,
+    body: body ? JSON.stringify(body) : null,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+async function uploadFoto(file, camisaId) {
+  const ext  = file.name.split('.').pop();
+  const path = `${camisaId}/${Date.now()}.${ext}`;
+  const res  = await fetch(`${SUPABASE_URL}/storage/v1/object/camisas/${path}`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': file.type },
+    body: file,
+  });
+  if (!res.ok) throw new Error('Upload falhou');
+  return `${SUPABASE_URL}/storage/v1/object/public/camisas/${path}`;
+}
+
+// ═══════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    sessionStorage.setItem('ffc_admin', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('login-error').textContent = 'Usuário ou senha incorretos.';
+  }
+}
+function doLogout() {
+  sessionStorage.removeItem('ffc_admin');
+  location.reload();
+}
+if (sessionStorage.getItem('ffc_admin')) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadAll();
+}
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+const panelTitles = { camisas:'Camisas', fotos:'Fotos', fornecedoras:'Fornecedoras', patrocinadores:'Patrocinadores', contribuidores:'Contribuidores', blog:'Blog' };
+const btnLabels   = { camisas:'+ Nova Camisa', fotos:'', fornecedoras:'+ Nova Fornecedora', patrocinadores:'+ Novo Patrocinador', contribuidores:'+ Novo Contribuidor', blog:'+ Novo Artigo' };
+let currentPanel  = 'camisas';
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  btn.classList.add('active');
+  currentPanel = name;
+  document.getElementById('topbar-title').textContent = panelTitles[name];
+  const btnNovo = document.getElementById('btn-novo');
+  btnNovo.textContent = btnLabels[name];
+  btnNovo.style.display = btnLabels[name] ? '' : 'none';
+}
+
+// ═══════════════════════════════════
+// LOAD ALL DATA
+// ═══════════════════════════════════
+let camisas=[], fornecedoras=[], patrocinadores=[], contribuidores=[], fotos=[];
+
+async function loadAll() {
+  try {
+    [camisas, fornecedoras, patrocinadores, contribuidores, fotos] = await Promise.all([
+      api('camisas?select=*,fornecedoras(nome),patrocinadores(nome),contribuidores(nome,instagram),fotos_camisas(id,principal,url)&order=ano.desc'),
+      api('fornecedoras?select=*&order=ano_inicio.asc'),
+      api('patrocinadores?select=*&order=nome.asc'),
+      api('contribuidores?select=*&order=nome.asc'),
+      api('fotos_camisas?select=*&order=ordem.asc'),
+    ]);
+    renderAll();
+  } catch(e) {
+    toast('Erro ao carregar dados: '+e.message, 'error');
+  }
+}
+
+function renderAll() {
+  renderStats();
+  renderCamisas();
+  renderFornecedoras();
+  renderPatrocinadores();
+  renderContribuidores();
+  renderBlog();
+}
+
+// ═══════════════════════════════════
+// STATS
+// ═══════════════════════════════════
+function renderStats() {
+  document.getElementById('stat-total').textContent = camisas.length;
+  document.getElementById('stat-pub').textContent   = camisas.filter(c=>c.publicada).length;
+  document.getElementById('stat-fotos').textContent = camisas.filter(c=>c.fotos_camisas?.length>0).length;
+  document.getElementById('stat-contribuidores').textContent = contribuidores.length;
+}
+
+// ═══════════════════════════════════
+// CAMISAS TABLE
+// ═══════════════════════════════════
+const TIPO_LABELS = { i:'Titular I', ii:'Visitante II', iii:'3ª Camisa', gk:'Goleiro', tr:'Treino' };
+const TIPO_BADGES = { i:'badge-i', ii:'badge-ii', iii:'badge-iii', gk:'badge-gk', tr:'badge-ii' };
+
+function renderCamisas() {
+  const tb = document.getElementById('tb-camisas');
+  if (!camisas.length) { tb.innerHTML = '<tr><td colspan="8"><div class="empty"><strong>0</strong>Nenhuma camisa cadastrada ainda.</div></td></tr>'; return; }
+  tb.innerHTML = camisas.map(c => {
+    const forn = c.fornecedoras?.nome || '—';
+    const patr = c.patrocinadores?.nome || '—';
+    const nFotos = c.fotos_camisas?.length || 0;
+    return `<tr>
+      <td><strong>${c.ano}</strong></td>
+      <td>${c.nome}</td>
+      <td><span class="badge ${TIPO_BADGES[c.tipo]}">${TIPO_LABELS[c.tipo]}</span></td>
+      <td>${forn}</td>
+      <td>${patr}</td>
+      <td>${nFotos > 0 ? `<span class="badge badge-on">${nFotos} foto${nFotos>1?'s':''}</span>` : '<span class="badge badge-off">sem foto</span>'}</td>
+      <td><span class="badge ${c.publicada?'badge-on':'badge-off'}">${c.publicada?'Publicada':'Rascunho'}</span></td>
+      <td class="td-actions">
+        <button class="btn-sm btn-edit" onclick="editCamisa('${c.id}')">Editar</button>
+        <button class="btn-sm btn-delete" onclick="deleteCamisa('${c.id}')">Excluir</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+// FORNECEDORAS TABLE
+// ═══════════════════════════════════
+function renderFornecedoras() {
+  const tb = document.getElementById('tb-fornecedoras');
+  if (!fornecedoras.length) { tb.innerHTML = '<tr><td colspan="4"><div class="empty"><strong>0</strong>Nenhuma fornecedora cadastrada.</div></td></tr>'; return; }
+  tb.innerHTML = fornecedoras.map(f => {
+    const count = camisas.filter(c=>c.fornecedoras?.nome===f.nome).length;
+    return `<tr>
+      <td><strong>${f.nome}</strong></td>
+      <td>${f.ano_inicio}–${f.atual?'hoje':f.ano_fim||'?'}</td>
+      <td>${count}</td>
+      <td class="td-actions">
+        <button class="btn-sm btn-edit" onclick="editFornecedora('${f.id}')">Editar</button>
+        <button class="btn-sm btn-delete" onclick="deleteFornecedora('${f.id}')">Excluir</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+// PATROCINADORES TABLE
+// ═══════════════════════════════════
+function renderPatrocinadores() {
+  const tb = document.getElementById('tb-patrocinadores');
+  if (!patrocinadores.length) { tb.innerHTML = '<tr><td colspan="3"><div class="empty"><strong>0</strong>Nenhum patrocinador cadastrado.</div></td></tr>'; return; }
+  tb.innerHTML = patrocinadores.map(p => {
+    const count = camisas.filter(c=>c.patrocinadores?.nome===p.nome).length;
+    return `<tr>
+      <td><strong>${p.nome}</strong></td>
+      <td>${count}</td>
+      <td class="td-actions">
+        <button class="btn-sm btn-edit" onclick="editPatrocinador('${p.id}')">Editar</button>
+        <button class="btn-sm btn-delete" onclick="deletePatrocinador('${p.id}')">Excluir</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+// CONTRIBUIDORES TABLE
+// ═══════════════════════════════════
+function renderContribuidores() {
+  const tb = document.getElementById('tb-contribuidores');
+  if (!contribuidores.length) { tb.innerHTML = '<tr><td colspan="4"><div class="empty"><strong>0</strong>Nenhum contribuidor cadastrado.</div></td></tr>'; return; }
+  tb.innerHTML = contribuidores.map(c => {
+    const count = camisas.filter(cs=>cs.contribuidores?.nome===c.nome).length;
+    return `<tr>
+      <td><strong>${c.nome}</strong></td>
+      <td>${c.instagram ? '@'+c.instagram : '—'}</td>
+      <td>${count}</td>
+      <td class="td-actions">
+        <button class="btn-sm btn-edit" onclick="editContribuidor('${c.id}')">Editar</button>
+        <button class="btn-sm btn-delete" onclick="deleteContribuidor('${c.id}')">Excluir</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+// FORM — CAMISA
+// ═══════════════════════════════════
+let formMode = 'new'; // 'new' | 'edit'
+let formId   = null;
+let pendingFiles = [];
+let existingPhotos = [];
+
+function openForm(id=null) {
+  formMode = id ? 'edit' : 'new';
+  formId   = id;
+  pendingFiles  = [];
+  existingPhotos = [];
+  document.getElementById('form-head-title').textContent = id ? 'Editar Camisa' : 'Nova Camisa';
+
+  const fOpts = fornecedoras.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('');
+  const pOpts = patrocinadores.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+  const cOpts = contribuidores.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+
+  document.getElementById('form-body').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Identificação</div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Ano <span>*</span></label>
+          <input class="form-input" id="f-ano" type="number" min="1921" max="2099" placeholder="2024">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Temporada</label>
+          <input class="form-input" id="f-temporada" placeholder="2024">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Nome <span>*</span></label>
+          <input class="form-input" id="f-nome" placeholder="ex: Camisa Titular">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Tipo <span>*</span></label>
+          <select class="form-select" id="f-tipo">
+            <option value="i">Titular I</option>
+            <option value="ii">Visitante II</option>
+            <option value="iii">3ª Camisa</option>
+            <option value="gk">Goleiro</option>
+            <option value="tr">Treino</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Era <span>*</span></label>
+          <select class="form-select" id="f-era">
+            <option value="modern">Moderna (1990–hoje)</option>
+            <option value="classic">Clássica (1960–1989)</option>
+            <option value="vintage">Vintage (–1959)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Vínculos</div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Fornecedora</label>
+          <select class="form-select" id="f-fornecedora">
+            <option value="">— Selecione —</option>
+            ${fOpts}
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Patrocinador</label>
+          <select class="form-select" id="f-patrocinador">
+            <option value="">— Nenhum —</option>
+            ${pOpts}
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Contribuidor</label>
+          <select class="form-select" id="f-contribuidor">
+            <option value="">— Nenhum —</option>
+            ${cOpts}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Detalhes</div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Notas históricas</label>
+          <textarea class="form-textarea" id="f-notas" placeholder="Contexto histórico, características da peça, curiosidades..."></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Design Key <span style="color:var(--grey-mid)">— para agrupar variantes</span></label>
+          <input class="form-input" id="f-dk" placeholder="ex: penalty-stripe-2010s">
+          <div class="form-hint">Camisas com o mesmo design key aparecem como "variações relacionadas"</div>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="f-pub">
+            <option value="true">Publicada</option>
+            <option value="false">Rascunho (não aparece no site)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Fotos</div>
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondrop="dropFiles(event)">
+        <div class="upload-zone-icon">📷</div>
+        <div class="upload-zone-text">Clique ou arraste fotos aqui</div>
+        <div class="upload-zone-hint">JPG, PNG, WEBP — máx 5MB por foto</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple onchange="addFiles(this.files)">
+      <div class="photos-preview" id="photos-preview"></div>
+    </div>
+  `;
+
+  // If editing, fill in existing data
+  if (id) {
+    const c = camisas.find(x=>x.id===id);
+    if (c) {
+      document.getElementById('f-ano').value  = c.ano;
+      document.getElementById('f-nome').value = c.nome;
+      document.getElementById('f-tipo').value = c.tipo;
+      document.getElementById('f-era').value  = c.era;
+      document.getElementById('f-notas').value = c.notas || '';
+      document.getElementById('f-dk').value   = c.design_key || '';
+      document.getElementById('f-pub').value  = String(c.publicada);
+      if (c.fornecedoras) {
+        const f = fornecedoras.find(x=>x.nome===c.fornecedoras.nome);
+        if (f) document.getElementById('f-fornecedora').value = f.id;
+      }
+      if (c.patrocinadores) {
+        const p = patrocinadores.find(x=>x.nome===c.patrocinadores.nome);
+        if (p) document.getElementById('f-patrocinador').value = p.id;
+      }
+      if (c.contribuidores) {
+        const ct = contribuidores.find(x=>x.nome===c.contribuidores.nome);
+        if (ct) document.getElementById('f-contribuidor').value = ct.id;
+      }
+      // Show existing photos
+      existingPhotos = c.fotos_camisas || [];
+      renderPhotosPreview();
+    }
+  }
+
+  document.getElementById('form-overlay').classList.add('open');
+  document.getElementById('btn-salvar').onclick = salvarForm;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeForm() {
+  document.getElementById('form-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('form-overlay')) closeForm();
+}
+
+// ── PHOTOS ──
+function dragOver(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('dragover'); }
+function dropFiles(e) { e.preventDefault(); document.getElementById('upload-zone').classList.remove('dragover'); addFiles(e.dataTransfer.files); }
+function addFiles(fileList) {
+  for (const f of fileList) {
+    if (!f.type.startsWith('image/')) continue;
+    pendingFiles.push({ file: f, url: URL.createObjectURL(f), principal: pendingFiles.length === 0 && existingPhotos.length === 0 });
+  }
+  renderPhotosPreview();
+}
+
+function renderPhotosPreview() {
+  const wrap = document.getElementById('photos-preview');
+  const allPhotos = [
+    ...existingPhotos.map(p=>({ ...p, isExisting:true })),
+    ...pendingFiles.map((p,i)=>({ ...p, isNew:true, idx:i })),
+  ];
+  if (!allPhotos.length) { wrap.innerHTML=''; return; }
+  wrap.innerHTML = allPhotos.map((p,i) => `
+    <div class="photo-thumb">
+      <img src="${p.url}" alt="">
+      ${p.principal ? '<div class="photo-main-badge">Principal</div>' : ''}
+      <div class="photo-thumb-overlay">
+        ${!p.principal ? `<button class="photo-btn photo-btn-main" onclick="setMainPhoto(${i},${p.isExisting||false})">Principal</button>` : ''}
+        <button class="photo-btn photo-btn-del" onclick="removePhoto(${i},${p.isExisting||false},'${p.id||''}')">Excluir</button>
+      </div>
+    </div>`).join('');
+}
+
+function setMainPhoto(idx, isExisting) {
+  existingPhotos.forEach(p=>p.principal=false);
+  pendingFiles.forEach(p=>p.principal=false);
+  const allPhotos = [...existingPhotos, ...pendingFiles];
+  if (allPhotos[idx]) allPhotos[idx].principal = true;
+  renderPhotosPreview();
+}
+
+async function removePhoto(idx, isExisting, fotoId) {
+  if (isExisting && fotoId) {
+    try { await api(`fotos_camisas?id=eq.${fotoId}`, 'DELETE'); existingPhotos = existingPhotos.filter(p=>p.id!==fotoId); }
+    catch(e) { toast('Erro ao excluir foto', 'error'); return; }
+  } else {
+    const newIdx = idx - existingPhotos.length;
+    pendingFiles.splice(newIdx, 1);
+  }
+  renderPhotosPreview();
+}
+
+// ── SAVE ──
+async function salvarForm() {
+  const btn = document.getElementById('btn-salvar');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const get = id => { const el = document.getElementById(id); return el ? el.value : null; };
+
+    const payload = {
+      ano:             parseInt(get('f-ano')),
+      nome:            (get('f-nome') || '').trim(),
+      tipo:            get('f-tipo'),
+      era:             get('f-era'),
+      notas:           (get('f-notas') || '').trim() || null,
+      design_key:      (get('f-dk') || '').trim() || null,
+      publicada:       get('f-pub') === 'true',
+      fornecedora_id:  get('f-fornecedora') || null,
+      patrocinador_id: get('f-patrocinador') || null,
+      contribuidor_id: get('f-contribuidor') || null,
+    };
+
+    if (!payload.ano || !payload.nome) throw new Error('Ano e Nome são obrigatórios');
+
+    let camisaId = formId;
+
+    if (formMode === 'new') {
+      const res = await api('camisas', 'POST', payload);
+      camisaId = res[0].id;
+    } else {
+      await api(`camisas?id=eq.${formId}`, 'PATCH', payload);
+    }
+
+    // Upload pending photos
+    for (const pf of pendingFiles) {
+      const url = await uploadFoto(pf.file, camisaId);
+      await api('fotos_camisas', 'POST', {
+        camisa_id: camisaId,
+        url,
+        principal: pf.principal,
+        ordem: existingPhotos.length,
+      });
+    }
+
+    // Update principal flags for existing photos
+    for (const ep of existingPhotos) {
+      await api(`fotos_camisas?id=eq.${ep.id}`, 'PATCH', { principal: ep.principal });
+    }
+
+    toast(formMode==='new' ? 'Camisa criada com sucesso!' : 'Camisa atualizada!', 'success');
+    closeForm();
+    await loadAll();
+  } catch(e) {
+    toast('Erro: '+e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Salvar';
+  }
+}
+
+// ── EDIT / DELETE ──
+function editCamisa(id) { openForm(id); }
+
+async function deleteCamisa(id) {
+  if (!confirm('Excluir esta camisa? Esta ação não pode ser desfeita.')) return;
+  try {
+    await api(`camisas?id=eq.${id}`, 'DELETE');
+    toast('Camisa excluída.', 'success');
+    await loadAll();
+  } catch(e) { toast('Erro: '+e.message,'error'); }
+}
+
+// ── FORNECEDORA FORM ──
+let fornLogos = []; // { content: svgString, name: filename, isMain: bool, isExisting: bool }
+
+function editFornecedora(id) {
+  const f = fornecedoras.find(x=>x.id===id);
+  fornLogos = [];
+
+  // If editing and already has logo_svg, show it
+  if (f?.logo_svg) {
+    fornLogos = [{ content: f.logo_svg, name: 'logo_existente.svg', isMain: true, isExisting: true }];
+  }
+
+  document.getElementById('form-head-title').textContent = id ? 'Editar Fornecedora' : 'Nova Fornecedora';
+  document.getElementById('form-body').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Dados</div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Nome <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="sf-fn" placeholder="ex: Penalty" value="${f?.nome||''}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Ano início <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="sf-fi" type="number" min="1921" max="2099" value="${f?.ano_inicio||''}">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Ano fim</label>
+          <input class="form-input" id="sf-ff" type="number" min="1921" max="2099" value="${f?.ano_fim||''}" placeholder="Deixe vazio se atual">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Fornecedora atual?</label>
+          <select class="form-select" id="sf-fa">
+            <option value="false" ${!f?.atual?'selected':''}>Não</option>
+            <option value="true"  ${f?.atual?'selected':''}>Sim</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Logo SVG</div>
+      <div class="form-hint" style="margin-bottom:12px;font-size:10px;color:var(--grey-mid)">
+        Faça upload do arquivo SVG da logo. Se tiver mais de uma versão, suba todas e marque a principal.
+      </div>
+      <div class="svg-upload-area" id="forn-svg-zone"
+        onclick="document.getElementById('forn-svg-input').click()"
+        ondragover="event.preventDefault();this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="dropSvgForn(event)">
+        <input type="file" id="forn-svg-input" accept=".svg,image/svg+xml" multiple onchange="addSvgForn(this.files)">
+        <div class="svg-upload-label">📎 Clique ou arraste arquivos SVG</div>
+        <div class="svg-upload-hint">Aceita múltiplos arquivos .svg</div>
+      </div>
+      <div class="svg-logos-list" id="forn-logos-list"></div>
+    </div>`;
+
+  renderFornLogos();
+
+  document.getElementById('btn-salvar').onclick = async () => {
+    const btn = document.getElementById('btn-salvar');
+    btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+    try {
+      const mainLogo = fornLogos.find(l=>l.isMain) || fornLogos[0];
+      const payload = {
+        nome:       document.getElementById('sf-fn').value.trim(),
+        ano_inicio: parseInt(document.getElementById('sf-fi').value),
+        ano_fim:    parseInt(document.getElementById('sf-ff').value)||null,
+        atual:      document.getElementById('sf-fa').value==='true',
+        logo_svg:   mainLogo?.content || null,
+      };
+      if (!payload.nome || !payload.ano_inicio) throw new Error('Nome e Ano início são obrigatórios');
+      if (id) await api(`fornecedoras?id=eq.${id}`,'PATCH',payload);
+      else     await api('fornecedoras','POST',payload);
+      toast('Fornecedora salva!','success');
+      closeForm();
+      await loadAll();
+    } catch(e) { toast('Erro: '+e.message,'error'); }
+    finally { btn.disabled=false; btn.textContent='Salvar'; }
+  };
+
+  document.getElementById('form-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function dropSvgForn(e) {
+  e.preventDefault();
+  document.getElementById('forn-svg-zone').classList.remove('dragover');
+  addSvgForn(e.dataTransfer.files);
+}
+
+async function addSvgForn(fileList) {
+  for (const file of fileList) {
+    if (!file.name.endsWith('.svg') && file.type!=='image/svg+xml') continue;
+    const content = await file.text();
+    fornLogos.push({ content, name: file.name, isMain: fornLogos.length===0, isExisting: false });
+  }
+  renderFornLogos();
+}
+
+function renderFornLogos() {
+  const list = document.getElementById('forn-logos-list');
+  if (!fornLogos.length) { list.innerHTML=''; return; }
+  list.innerHTML = fornLogos.map((l,i) => `
+    <div class="svg-logo-item">
+      <div class="svg-logo-preview">${l.content}</div>
+      <div class="svg-logo-info">
+        <div class="svg-logo-name">${l.name}</div>
+        <div class="svg-logo-size">${Math.round(l.content.length/1024*10)/10} KB</div>
+      </div>
+      <div class="svg-logo-actions">
+        ${l.isMain ? '<span class="svg-main-badge">Principal</span>' : `<button class="btn-sm btn-edit" onclick="setFornMainLogo(${i})">Principal</button>`}
+        <button class="btn-sm btn-delete" onclick="removeFornLogo(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function setFornMainLogo(i) { fornLogos.forEach((l,j)=>l.isMain=j===i); renderFornLogos(); }
+function removeFornLogo(i) { fornLogos.splice(i,1); if(fornLogos.length&&!fornLogos.find(l=>l.isMain))fornLogos[0].isMain=true; renderFornLogos(); }
+
+
+// ── PATROCINADOR FORM ──
+let patrLogos = []; // suporta múltiplos SVGs
+
+function editPatrocinador(id) {
+  const p = patrocinadores.find(x=>x.id===id);
+  patrLogos = [];
+
+  // logo_svg é um JSON array de { content, name, isMain } salvo como texto
+  if (p?.logo_svg) {
+    try {
+      const parsed = JSON.parse(p.logo_svg);
+      patrLogos = Array.isArray(parsed) ? parsed : [{ content: parsed, name: 'logo.svg', isMain: true, isExisting: true }];
+    } catch {
+      patrLogos = [{ content: p.logo_svg, name: 'logo.svg', isMain: true, isExisting: true }];
+    }
+  }
+
+  document.getElementById('form-head-title').textContent = id ? 'Editar Patrocinador' : 'Novo Patrocinador';
+  document.getElementById('form-body').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Dados</div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Nome <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="sf-pn" placeholder="ex: Havan" value="${p?.nome||''}">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Logos SVG</div>
+      <div class="form-hint" style="margin-bottom:12px;font-size:10px;color:var(--grey-mid)">
+        Um patrocinador pode ter várias versões de logo ao longo do tempo. Suba todas e marque a principal (que aparece no site).
+      </div>
+      <div class="svg-upload-area" id="patr-svg-zone"
+        onclick="document.getElementById('patr-svg-input').click()"
+        ondragover="event.preventDefault();this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="dropSvgPatr(event)">
+        <input type="file" id="patr-svg-input" accept=".svg,image/svg+xml" multiple onchange="addSvgPatr(this.files)">
+        <div class="svg-upload-label">📎 Clique ou arraste arquivos SVG</div>
+        <div class="svg-upload-hint">Aceita múltiplos arquivos — ex: logo antiga + logo nova</div>
+      </div>
+      <div class="svg-logos-list" id="patr-logos-list"></div>
+    </div>`;
+
+  renderPatrLogos();
+
+  document.getElementById('btn-salvar').onclick = async () => {
+    const btn = document.getElementById('btn-salvar');
+    btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+    try {
+      const payload = {
+        nome:     document.getElementById('sf-pn').value.trim(),
+        logo_svg: patrLogos.length ? JSON.stringify(patrLogos.map(l=>({ content:l.content, name:l.name, isMain:l.isMain||false }))) : null,
+      };
+      if (!payload.nome) throw new Error('Nome é obrigatório');
+      if (id) await api(`patrocinadores?id=eq.${id}`,'PATCH',payload);
+      else     await api('patrocinadores','POST',payload);
+      toast('Patrocinador salvo!','success');
+      closeForm();
+      await loadAll();
+    } catch(e) { toast('Erro: '+e.message,'error'); }
+    finally { btn.disabled=false; btn.textContent='Salvar'; }
+  };
+
+  document.getElementById('form-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function dropSvgPatr(e) {
+  e.preventDefault();
+  document.getElementById('patr-svg-zone').classList.remove('dragover');
+  addSvgPatr(e.dataTransfer.files);
+}
+
+async function addSvgPatr(fileList) {
+  for (const file of fileList) {
+    if (!file.name.endsWith('.svg') && file.type!=='image/svg+xml') continue;
+    const content = await file.text();
+    patrLogos.push({ content, name: file.name, isMain: patrLogos.length===0 });
+  }
+  renderPatrLogos();
+}
+
+function renderPatrLogos() {
+  const list = document.getElementById('patr-logos-list');
+  if (!patrLogos.length) { list.innerHTML=''; return; }
+  list.innerHTML = patrLogos.map((l,i) => `
+    <div class="svg-logo-item">
+      <div class="svg-logo-preview">${l.content}</div>
+      <div class="svg-logo-info">
+        <div class="svg-logo-name">${l.name}</div>
+        <div class="svg-logo-size">${Math.round(l.content.length/1024*10)/10} KB</div>
+      </div>
+      <div class="svg-logo-actions">
+        ${l.isMain ? '<span class="svg-main-badge">Principal</span>' : `<button class="btn-sm btn-edit" onclick="setPatrMainLogo(${i})">Principal</button>`}
+        <button class="btn-sm btn-delete" onclick="removePatrLogo(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function setPatrMainLogo(i) { patrLogos.forEach((l,j)=>l.isMain=j===i); renderPatrLogos(); }
+function removePatrLogo(i) { patrLogos.splice(i,1); if(patrLogos.length&&!patrLogos.find(l=>l.isMain))patrLogos[0].isMain=true; renderPatrLogos(); }
+
+
+async function deletePatrocinador(id) {
+  if (!confirm('Excluir este patrocinador?')) return;
+  try { await api(`patrocinadores?id=eq.${id}`,'DELETE'); toast('Excluído.','success'); await loadAll(); }
+  catch(e) { toast('Erro: '+e.message,'error'); }
+}
+
+async function deleteFornecedora(id) {
+  if (!confirm('Excluir esta fornecedora?')) return;
+  try { await api(`fornecedoras?id=eq.${id}`,'DELETE'); toast('Excluída.','success'); await loadAll(); }
+  catch(e) { toast('Erro: '+e.message,'error'); }
+}
+
+// ── CONTRIBUIDOR FORM ──
+function editContribuidor(id) {
+  const c = contribuidores.find(x=>x.id===id);
+  openSimpleForm('Contribuidor', [
+    { id:'cn', label:'Nome', val: c?.nome||'' },
+    { id:'ci', label:'Instagram (sem @)', val: c?.instagram||'' },
+    { id:'cd', label:'Descrição', type:'textarea', val: c?.descricao||'' },
+  ], async () => {
+    const payload = {
+      nome:      document.getElementById('sf-cn').value.trim(),
+      instagram: document.getElementById('sf-ci').value.trim()||null,
+      descricao: document.getElementById('sf-cd').value.trim()||null,
+    };
+    if (id) await api(`contribuidores?id=eq.${id}`,'PATCH',payload);
+    else await api('contribuidores','POST',payload);
+    await loadAll();
+  });
+}
+
+async function deleteContribuidor(id) {
+  if (!confirm('Excluir este contribuidor?')) return;
+  try { await api(`contribuidores?id=eq.${id}`,'DELETE'); toast('Excluído.','success'); await loadAll(); }
+  catch(e) { toast('Erro: '+e.message,'error'); }
+}
+
+// ── SIMPLE FORM (fornecedoras, patrocinadores, contribuidores) ──
+let simpleFormCallback = null;
+
+function openSimpleForm(title, fields, callback) {
+  simpleFormCallback = callback;
+  document.getElementById('form-head-title').textContent = title;
+  document.getElementById('form-body').innerHTML = `
+    <div class="form-section">
+      ${fields.map(f => `
+        <div class="form-row full" style="margin-bottom:14px">
+          <div class="form-field">
+            <label class="form-label">${f.label}</label>
+            ${f.type==='textarea'
+              ? `<textarea class="form-textarea" id="sf-${f.id}">${f.val||''}</textarea>`
+              : f.type==='select'
+              ? `<select class="form-select" id="sf-${f.id}">${f.opts.map(o=>`<option value="${o[0]}" ${f.val===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`
+              : `<input class="form-input" id="sf-${f.id}" type="${f.type||'text'}" value="${f.val||''}">`
+            }
+          </div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('btn-salvar').onclick = async () => {
+    const btn = document.getElementById('btn-salvar');
+    btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+    try { await callback(); toast('Salvo com sucesso!','success'); closeForm(); }
+    catch(e) { toast('Erro: '+e.message,'error'); }
+    finally { btn.disabled=false; btn.textContent='Salvar'; }
+  };
+  document.getElementById('form-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+// Override "open form" button for non-camisa panels
+document.getElementById('btn-novo').addEventListener('click', () => {
+  if (currentPanel==='camisas')        openForm(null);
+  if (currentPanel==='fornecedoras')   editFornecedora(null);
+  if (currentPanel==='patrocinadores') editPatrocinador(null);
+  if (currentPanel==='contribuidores') editContribuidor(null);
+  if (currentPanel==='blog')           editArtigo(null);
+});
+
+// ═══════════════════════════════════
+// BLOG
+// ═══════════════════════════════════
+let artigos = [];
+
+async function loadBlog() {
+  const res = await api('artigos?select=*&order=criado_em.desc');
+  artigos = Array.isArray(res) ? res : [];
+}
+
+function renderBlog() {
+  const tb = document.getElementById('tb-blog');
+  if (!artigos.length) {
+    tb.innerHTML = '<tr><td colspan="5"><div class="empty"><strong>✍️</strong>Nenhum artigo ainda.</div></td></tr>';
+    return;
+  }
+  tb.innerHTML = artigos.map(a => `<tr>
+    <td><strong>${a.titulo}</strong>${a.subtitulo ? `<br><span style="font-size:10px;color:var(--grey-light);font-weight:300">${a.subtitulo}</span>` : ''}</td>
+    <td>${a.autor}${a.autor_instagram ? `<br><span style="font-size:10px;color:var(--grey-light)">@${a.autor_instagram}</span>` : ''}</td>
+    <td style="font-size:11px">${new Date(a.criado_em).toLocaleDateString('pt-BR')}</td>
+    <td><span class="badge ${a.publicado ? 'badge-on' : 'badge-off'}">${a.publicado ? 'Publicado' : 'Rascunho'}</span></td>
+    <td class="td-actions">
+      <button class="btn-sm btn-edit" onclick="editArtigo('${a.id}')">Editar</button>
+      <button class="btn-sm btn-delete" onclick="deleteArtigo('${a.id}')">Excluir</button>
+    </td>
+  </tr>`).join('');
+}
+
+let blogImageFile = null;
+let blogImagePreview = null;
+
+function editArtigo(id) {
+  const a = id ? artigos.find(x => x.id === id) : null;
+  blogImageFile = null;
+  blogImagePreview = a?.foto_url || null;
+
+  document.getElementById('form-head-title').textContent = id ? 'Editar Artigo' : 'Novo Artigo';
+  document.getElementById('form-body').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Conteúdo</div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Título <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="bf-titulo" placeholder="ex: A camisa que quase não existiu" value="${a?.titulo||''}">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Subtítulo / Linha de apoio</label>
+          <input class="form-input" id="bf-sub" placeholder="Um resumo em uma frase" value="${a?.subtitulo||''}">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Texto do artigo <span style="color:var(--red)">*</span></label>
+          <textarea class="form-textarea" id="bf-conteudo" style="min-height:280px;line-height:1.7" placeholder="Escreva aqui o artigo completo...">${a?.conteudo||''}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Autor</div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Nome do autor <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="bf-autor" placeholder="Nome completo" value="${a?.autor||''}">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Instagram (sem @)</label>
+          <input class="form-input" id="bf-ig" placeholder="nomeusuario" value="${a?.autor_instagram||''}">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Foto de capa</div>
+      ${blogImagePreview ? `<div style="margin-bottom:12px"><img src="${blogImagePreview}" style="max-width:100%;max-height:200px;object-fit:cover;border-radius:2px;border:1px solid rgba(255,255,255,.08)"></div>` : ''}
+      <div class="upload-zone" onclick="document.getElementById('bf-foto-input').click()" style="margin-bottom:0">
+        <input type="file" id="bf-foto-input" accept="image/*" style="display:none" onchange="previewBlogPhoto(this)">
+        <div class="upload-zone-icon">🖼</div>
+        <div class="upload-zone-text">${blogImagePreview ? 'Trocar foto de capa' : 'Adicionar foto de capa'}</div>
+        <div class="upload-zone-hint">JPG, PNG, WEBP — recomendado 1200×630px</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Publicação</div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="bf-pub">
+            <option value="false" ${!a?.publicado?'selected':''}>Rascunho (não aparece no blog)</option>
+            <option value="true"  ${a?.publicado?'selected':''}>Publicado</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('btn-salvar').onclick = () => salvarArtigo(id);
+  document.getElementById('form-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function previewBlogPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  blogImageFile = file;
+}
+
+async function salvarArtigo(id) {
+  const btn = document.getElementById('btn-salvar');
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
+  try {
+    const get = i => { const el = document.getElementById(i); return el ? el.value : ''; };
+
+    // Upload foto if new
+    let fotoUrl = id ? artigos.find(x=>x.id===id)?.foto_url : null;
+    if (blogImageFile) {
+      const ext  = blogImageFile.name.split('.').pop();
+      const path = `artigos/${Date.now()}.${ext}`;
+      const res  = await fetch(`${SUPABASE_URL}/storage/v1/object/blog/${path}`, {
+        method:'POST',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':blogImageFile.type},
+        body: blogImageFile,
+      });
+      if (!res.ok) throw new Error('Erro no upload da foto');
+      fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/blog/${path}`;
+    }
+
+    const payload = {
+      titulo:          get('bf-titulo').trim(),
+      subtitulo:       get('bf-sub').trim() || null,
+      conteudo:        get('bf-conteudo').trim(),
+      autor:           get('bf-autor').trim(),
+      autor_instagram: get('bf-ig').trim() || null,
+      publicado:       get('bf-pub') === 'true',
+      foto_url:        fotoUrl,
+    };
+
+    if (!payload.titulo || !payload.conteudo || !payload.autor)
+      throw new Error('Título, conteúdo e autor são obrigatórios');
+
+    if (id) await api(`artigos?id=eq.${id}`, 'PATCH', payload);
+    else    await api('artigos', 'POST', payload);
+
+    toast(id ? 'Artigo atualizado!' : 'Artigo criado!', 'success');
+    closeForm();
+    await loadBlog();
+    renderBlog();
+  } catch(e) { toast('Erro: '+e.message, 'error'); }
+  finally { btn.disabled=false; btn.textContent='Salvar'; }
+}
+
+async function deleteArtigo(id) {
+  if (!confirm('Excluir este artigo?')) return;
+  try {
+    await api(`artigos?id=eq.${id}`, 'DELETE');
+    toast('Artigo excluído.', 'success');
+    await loadBlog(); renderBlog();
+  } catch(e) { toast('Erro: '+e.message, 'error'); }
+}
+
+// add loadBlog to the main loadAll
+const _origLoadAll = loadAll;
+async function loadAll() {
+  try {
+    [camisas, fornecedoras, patrocinadores, contribuidores, fotos] = await Promise.all([
+      api('camisas?select=*,fornecedoras(nome),patrocinadores(nome),contribuidores(nome,instagram),fotos_camisas(id,principal,url)&order=ano.desc'),
+      api('fornecedoras?select=*&order=ano_inicio.asc'),
+      api('patrocinadores?select=*&order=nome.asc'),
+      api('contribuidores?select=*&order=nome.asc'),
+      api('fotos_camisas?select=*&order=ordem.asc'),
+    ]);
+    await loadBlog();
+    renderAll();
+  } catch(e) {
+    toast('Erro ao carregar dados: '+e.message, 'error');
+  }
+}
+
+// ═══════════════════════════════════
+// TOAST
+// ═══════════════════════════════════
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.innerHTML = `${type==='success'?'✓':'✕'} ${msg}`;
+  t.className = `toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeForm(); });
+</script>
+</body>
+</html>
