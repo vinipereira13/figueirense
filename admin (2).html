@@ -221,6 +221,10 @@ tr:hover td{background:var(--white-dim);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Blog
     </button>
+    <button class="nav-item" onclick="showPanel('textos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Textos do Site
+    </button>
     <div class="sidebar-bottom">
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
@@ -315,6 +319,15 @@ tr:hover td{background:var(--white-dim);}
             <tbody id="tb-blog"><tr><td colspan="5" class="empty">Carregando...</td></tr></tbody>
           </table>
         </div>
+      </div>
+
+      <!-- PANEL: TEXTOS DO SITE -->
+      <div class="panel" id="panel-textos">
+        <div style="margin-bottom:20px;padding:16px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:3px;">
+          <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:6px;">Como funciona</div>
+          <div style="font-size:11px;font-weight:300;color:var(--grey-light);line-height:1.7;">Edite os textos abaixo e clique em Salvar. O site atualiza automaticamente ao recarregar. Textos com múltiplas linhas se adaptam ao tamanho do conteúdo.</div>
+        </div>
+        <div id="textos-grid" style="display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.04);"></div>
       </div>
 
     </div>
@@ -412,8 +425,8 @@ if (sessionStorage.getItem('ffc_admin')) {
 // ═══════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════
-const panelTitles = { camisas:'Camisas', fotos:'Fotos', fornecedoras:'Fornecedoras', patrocinadores:'Patrocinadores', contribuidores:'Contribuidores', blog:'Blog' };
-const btnLabels   = { camisas:'+ Nova Camisa', fotos:'', fornecedoras:'+ Nova Fornecedora', patrocinadores:'+ Novo Patrocinador', contribuidores:'+ Novo Contribuidor', blog:'+ Novo Artigo' };
+const panelTitles = { camisas:'Camisas', fotos:'Fotos', fornecedoras:'Fornecedoras', patrocinadores:'Patrocinadores', contribuidores:'Contribuidores', blog:'Blog', textos:'Textos do Site' };
+const btnLabels   = { camisas:'+ Nova Camisa', fotos:'', fornecedoras:'+ Nova Fornecedora', patrocinadores:'+ Novo Patrocinador', contribuidores:'+ Novo Contribuidor', blog:'+ Novo Artigo', textos:'' };
 let currentPanel  = 'camisas';
 
 function showPanel(name, btn) {
@@ -455,6 +468,7 @@ function renderAll() {
   renderPatrocinadores();
   renderContribuidores();
   renderBlog();
+  renderTextos();
 }
 
 // ═══════════════════════════════════
@@ -1150,6 +1164,75 @@ document.getElementById('btn-novo').addEventListener('click', () => {
   if (currentPanel==='blog')           editArtigo(null);
 });
 
+// ═══════════════════════════════════════════
+// TEXTOS DO SITE
+// ═══════════════════════════════════════════
+let siteTextos = [];
+
+async function loadTextos() {
+  const res = await api('site_textos?select=*&order=id.asc');
+  siteTextos = Array.isArray(res) ? res : [];
+}
+
+function renderTextos() {
+  const grid = document.getElementById('textos-grid');
+  if (!siteTextos.length) {
+    grid.innerHTML = '<div class="empty" style="padding:40px;text-align:center;background:var(--black-3)"><strong>✏️</strong>Nenhum texto cadastrado. Execute o SQL de setup primeiro.</div>';
+    return;
+  }
+
+  grid.innerHTML = siteTextos.map(t => {
+    const isLong = t.valor.length > 80 || t.valor.includes('\n');
+    return `
+    <div style="background:var(--black-3);padding:20px 24px;display:grid;grid-template-columns:200px 1fr auto;gap:20px;align-items:start;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--white);margin-bottom:4px;">${t.label}</div>
+        <div style="font-size:10px;font-weight:300;color:var(--grey-mid);line-height:1.5;">${t.descricao||''}</div>
+      </div>
+      <div>
+        ${isLong
+          ? `<textarea class="form-textarea" id="txt-${t.id}" style="min-height:80px;resize:vertical;width:100%">${t.valor}</textarea>`
+          : `<input class="form-input" id="txt-${t.id}" type="text" value="${t.valor.replace(/"/g,'&quot;')}" style="width:100%">`
+        }
+      </div>
+      <div style="padding-top:2px;">
+        <button class="btn-sm btn-edit" onclick="salvarTexto('${t.id}')" style="white-space:nowrap;">Salvar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function salvarTexto(id) {
+  const el = document.getElementById('txt-' + id);
+  if (!el) return;
+  const valor = el.value.trim();
+  try {
+    await api(`site_textos?id=eq.${id}`, 'PATCH', { valor, atualizado_em: new Date().toISOString() });
+    // Update local
+    const t = siteTextos.find(x=>x.id===id);
+    if (t) t.valor = valor;
+    toast('Texto salvo!', 'success');
+  } catch(e) {
+    toast('Erro: '+e.message, 'error');
+  }
+}
+
+// Salvar todos de uma vez
+async function salvarTodosTextos() {
+  const btn = document.getElementById('btn-salvar-todos');
+  if (btn) { btn.disabled=true; btn.textContent='Salvando...'; }
+  let erros = 0;
+  for (const t of siteTextos) {
+    const el = document.getElementById('txt-' + t.id);
+    if (!el) continue;
+    try {
+      await api(`site_textos?id=eq.${t.id}`, 'PATCH', { valor: el.value.trim(), atualizado_em: new Date().toISOString() });
+    } catch { erros++; }
+  }
+  if (btn) { btn.disabled=false; btn.textContent='Salvar Todos'; }
+  toast(erros ? `${erros} erro(s) ao salvar` : 'Todos os textos salvos!', erros ? 'error' : 'success');
+}
+
 // ═══════════════════════════════════
 // BLOG
 // ═══════════════════════════════════
@@ -1324,6 +1407,7 @@ async function loadAll() {
       api('fotos_camisas?select=*&order=ordem.asc'),
     ]);
     await loadBlog();
+    await loadTextos();
     renderAll();
   } catch(e) {
     toast('Erro ao carregar dados: '+e.message, 'error');
