@@ -4,254 +4,318 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog — Figueirense Arquivo de Camisas</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f5f5f3;
+  --bg:#f4f3f0;
   --white:#ffffff;
   --black:#0a0a0a;
-  --grey-1:#1a1a1a;
-  --grey-2:#333333;
-  --grey-3:#666666;
-  --grey-4:#999999;
-  --grey-5:#cccccc;
-  --grey-6:#e8e8e6;
-  --grey-7:#f0f0ee;
+  --grey-1:#1c1c1c;
+  --grey-2:#3a3a3a;
+  --grey-3:#6b6b6b;
+  --grey-4:#a0a0a0;
+  --grey-5:#d0d0ce;
+  --grey-6:#e8e7e4;
+  --border:rgba(0,0,0,.09);
+  --radius:12px;
 }
 html{scroll-behavior:smooth;}
-body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--black);overflow-x:hidden;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
 /* ── HEADER ── */
 header{
   position:fixed;top:0;left:0;right:0;z-index:200;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 48px;height:64px;
-  background:rgba(245,245,243,.95);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--grey-6);
+  padding:0 48px;height:60px;
+  background:rgba(244,243,240,.96);backdrop-filter:blur(16px);
+  border-bottom:2px solid #16a152;
+  transition:height .3s ease;
+  overflow:visible;
 }
-.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
-.logo-crest{width:30px;height:30px;border:1.5px solid var(--grey-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--black);}
-.logo-text{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--black);}
-.logo-sub{font-size:8px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--grey-4);display:block;margin-top:1px;}
-nav{display:flex;gap:24px;align-items:center;}
-nav a{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-3);text-decoration:none;transition:color .2s;}
-nav a:hover{color:var(--black);}
-nav a.active{color:var(--black);font-weight:600;}
-.nav-back{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-3);text-decoration:none;transition:color .2s;}
-.nav-back:hover{color:var(--black);}
-.nav-back::before{content:'←';font-size:12px;}
+header.scrolled{height:50px;}
+.logo{display:flex;align-items:center;text-decoration:none;position:relative;}
+.logo-img-wrap{
+  position:relative;
+  width:84px;height:84px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  transform:translateY(0px);
+  flex-shrink:0;
+}
+header.scrolled .logo-img-wrap{
+  transform:translateY(16px);
+}
+.logo-img-wrap img{
+  width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.2));
+}
 
-/* ── HERO BLOG ── */
+.logo-text{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--black);display:block;}
+.logo-sub{font-size:8px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--grey-3);display:block;margin-top:1px;}
+nav{display:flex;gap:28px;align-items:center;}
+nav a{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-3);text-decoration:none;transition:color .2s;}
+nav a:hover,nav a.active{color:var(--black);}
+.nav-cta{
+  padding:8px 20px;background:var(--black);color:var(--white)!important;
+  border-radius:100px;font-size:10px!important;letter-spacing:.08em!important;
+  font-weight:600!important;transition:opacity .2s!important;
+}
+.nav-cta:hover{opacity:.8!important;}
+
+/* ── LIST VIEW ── */
+#list-view{}
+
+/* HERO SECTION */
 .blog-hero{
   padding:120px 48px 64px;
   background:var(--white);
-  border-bottom:1px solid var(--grey-6);
+  border-bottom:1px solid var(--border);
   position:relative;
-  overflow:hidden;
 }
-.blog-hero::before{
-  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
-  background-image:linear-gradient(var(--grey-6) 1px,transparent 1px),linear-gradient(90deg,var(--grey-6) 1px,transparent 1px);
-  background-size:40px 40px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
-  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
-  opacity:.4;
+.hero-eyebrow{
+  font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--grey-3);margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
 }
-.blog-hero-label{font-size:10px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--grey-4);margin-bottom:16px;display:flex;align-items:center;gap:10px;position:relative;}
-.blog-hero-label::before{content:'';width:28px;height:1px;background:var(--grey-4);}
-.blog-hero-title{font-size:clamp(40px,6vw,80px);font-weight:800;color:var(--black);letter-spacing:-.03em;line-height:.9;margin-bottom:20px;position:relative;}
-.blog-hero-desc{font-size:14px;font-weight:300;color:var(--grey-3);line-height:1.8;max-width:480px;position:relative;}
+.hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--grey-3);}
+.blog-hero-title{
+  font-size:clamp(36px,5vw,72px);font-weight:800;
+  color:var(--black);letter-spacing:-.03em;line-height:.95;
+  margin-bottom:20px;max-width:640px;
+}
+.blog-hero-desc{
+  font-size:14px;font-weight:300;color:var(--grey-3);
+  line-height:1.75;max-width:480px;
+}
 
-/* ── ARTICLE GRID ── */
-.articles-section{padding:64px 48px 96px;}
-.articles-count{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-4);margin-bottom:40px;}
+/* SUBMIT BAR */
+.submit-bar{
+  margin:0 48px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:32px;margin-bottom:0;
+}
+.submit-bar-text{font-size:13px;font-weight:400;color:var(--grey-3);}
+.submit-bar-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 18px;background:var(--black);color:var(--white);
+  border-radius:100px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;transition:opacity .2s;white-space:nowrap;
+}
+.submit-bar-btn:hover{opacity:.8;}
+.submit-bar-btn::after{content:'↗';font-size:12px;}
 
+/* ARTICLES SECTION */
+.articles-section{padding:48px 48px 96px;}
+.articles-count{
+  font-size:9px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--grey-4);margin-bottom:32px;
+}
+
+/* GRID */
 .articles-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-  gap:24px;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
 }
 
-/* featured first article — full width */
+/* CARD */
 .article-card{
   background:var(--white);
-  border:1px solid var(--grey-6);
-  border-radius:3px;
-  overflow:hidden;
-  cursor:pointer;
-  transition:border-color .25s,transform .25s,box-shadow .25s;
-  text-decoration:none;
-  color:inherit;
-  display:flex;
-  flex-direction:column;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;
+  transition:box-shadow .25s,transform .25s;
+  display:flex;flex-direction:column;
 }
 .article-card:hover{
-  border-color:var(--grey-4);
+  box-shadow:0 12px 48px rgba(0,0,0,.1);
   transform:translateY(-3px);
-  box-shadow:0 12px 40px rgba(0,0,0,.08);
-}
-.article-card.featured{
-  grid-column:1/-1;
-  flex-direction:row;
-  max-height:360px;
 }
 
+/* photo */
 .article-img{
-  width:100%;
-  aspect-ratio:16/9;
-  background:var(--grey-7);
-  overflow:hidden;
-  flex-shrink:0;
-}
-.article-card.featured .article-img{
-  width:48%;
-  aspect-ratio:auto;
+  width:100%;aspect-ratio:16/9;
+  background:var(--grey-6);overflow:hidden;flex-shrink:0;
+  position:relative;
 }
 .article-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
 .article-card:hover .article-img img{transform:scale(1.03);}
-.article-img-placeholder{
+.article-img-ph{
   width:100%;height:100%;
   display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--grey-6),var(--grey-5));
   font-size:32px;opacity:.3;
-  background:linear-gradient(135deg,var(--grey-7) 0%,var(--grey-6) 100%);
 }
 
-.article-body{padding:28px 28px 24px;display:flex;flex-direction:column;gap:12px;flex:1;}
-.article-card.featured .article-body{padding:40px 40px 32px;}
-
-.article-tag{
-  display:inline-block;padding:3px 10px;
-  background:var(--black);color:var(--white);
-  font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
-  border-radius:1px;align-self:flex-start;
+/* body */
+.article-body{padding:24px 24px 22px;display:flex;flex-direction:column;gap:10px;flex:1;}
+.article-cat{
+  font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--grey-3);
 }
 .article-title{
   font-size:18px;font-weight:700;color:var(--black);
-  line-height:1.25;letter-spacing:-.01em;
+  line-height:1.2;letter-spacing:-.02em;
 }
-.article-card.featured .article-title{font-size:26px;}
-.article-sub{font-size:13px;font-weight:300;color:var(--grey-3);line-height:1.65;}
-.article-meta{
-  display:flex;align-items:center;gap:12px;margin-top:auto;
-  padding-top:16px;border-top:1px solid var(--grey-6);
+.article-excerpt{
+  font-size:13px;font-weight:300;color:var(--grey-3);
+  line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
 }
-.article-author{font-size:11px;font-weight:500;color:var(--grey-2);}
-.article-author-ig{font-size:10px;font-weight:400;color:var(--grey-4);}
-.article-date{font-size:10px;font-weight:400;color:var(--grey-4);margin-left:auto;}
+.article-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:auto;padding-top:14px;border-top:1px solid var(--border);
+}
+.article-author-block{display:flex;flex-direction:column;gap:2px;}
+.article-author{font-size:11px;font-weight:600;color:var(--grey-1);}
+.article-date{font-size:10px;color:var(--grey-4);}
+.article-read-more{
+  font-size:10px;font-weight:600;color:var(--black);
+  display:flex;align-items:center;gap:4px;white-space:nowrap;
+}
+.article-read-more::after{content:'↗';font-size:11px;}
 
-/* empty state */
+/* empty */
 .empty-blog{
   grid-column:1/-1;text-align:center;padding:80px 0;
 }
-.empty-blog-icon{font-size:48px;margin-bottom:16px;opacity:.2;}
-.empty-blog-title{font-size:18px;font-weight:700;color:var(--grey-2);margin-bottom:8px;}
-.empty-blog-desc{font-size:13px;font-weight:300;color:var(--grey-4);}
+.empty-blog-icon{font-size:48px;margin-bottom:16px;opacity:.15;}
+.empty-blog-title{font-size:20px;font-weight:700;color:var(--grey-2);margin-bottom:8px;}
+.empty-blog-desc{font-size:14px;font-weight:300;color:var(--grey-4);}
 
-/* ── ARTICLE SINGLE VIEW ── */
-#article-view{display:none;min-height:100vh;}
-.article-view-hero{
-  padding:100px 48px 48px;
+/* ── SINGLE ARTICLE VIEW ── */
+#article-view{display:none;min-height:100vh;background:var(--bg);}
+
+.av-topbar{
+  padding:80px 48px 0;
   background:var(--white);
-  border-bottom:1px solid var(--grey-6);
 }
-.article-view-back{
+.av-back{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--grey-4);text-decoration:none;margin-bottom:32px;
-  cursor:pointer;transition:color .2s;border:none;background:none;font-family:'Sora',sans-serif;
+  font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--grey-3);text-decoration:none;margin-bottom:32px;
+  cursor:pointer;transition:color .2s;border:none;background:none;
+  font-family:'Sora',sans-serif;
 }
-.article-view-back:hover{color:var(--black);}
-.article-view-back::before{content:'←';}
-.article-view-tag{display:inline-block;padding:3px 10px;background:var(--black);color:var(--white);font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;border-radius:1px;margin-bottom:20px;}
-.article-view-title{font-size:clamp(28px,5vw,56px);font-weight:800;color:var(--black);line-height:.95;letter-spacing:-.03em;margin-bottom:16px;}
-.article-view-sub{font-size:16px;font-weight:300;color:var(--grey-3);line-height:1.7;margin-bottom:28px;max-width:640px;}
-.article-view-meta{display:flex;align-items:center;gap:16px;}
-.avm-author{font-size:12px;font-weight:600;color:var(--grey-2);}
-.avm-ig{font-size:11px;color:var(--grey-4);}
-.avm-dot{width:3px;height:3px;border-radius:50%;background:var(--grey-5);}
-.avm-date{font-size:11px;color:var(--grey-4);}
+.av-back:hover{color:var(--black);}
+.av-back::before{content:'←';font-size:12px;}
 
-.article-view-img{width:100%;max-height:520px;overflow:hidden;background:var(--grey-7);}
-.article-view-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.av-meta{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:20px;
+}
+.av-cat{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-3);}
+.av-dot{width:3px;height:3px;border-radius:50%;background:var(--grey-4);}
+.av-date{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-4);}
+.av-author-name{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-3);}
 
-.article-view-content{
-  max-width:720px;margin:0 auto;
-  padding:56px 48px 96px;
-  font-size:16px;font-weight:300;line-height:1.85;color:var(--grey-2);
-  white-space:pre-wrap;
-  word-break:break-word;
+.av-title{
+  font-size:clamp(28px,4.5vw,56px);font-weight:800;
+  color:var(--black);line-height:.95;letter-spacing:-.03em;
+  margin-bottom:20px;max-width:720px;
+}
+.av-sub{
+  font-size:15px;font-weight:300;color:var(--grey-2);
+  line-height:1.75;max-width:620px;margin-bottom:40px;
+}
+.av-sub-divider{width:100%;height:1px;background:var(--border);}
+
+/* hero image */
+.av-hero-img{
+  width:100%;max-height:520px;overflow:hidden;
+  background:var(--grey-6);
+}
+.av-hero-img img{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* article content */
+.av-content-wrap{
+  display:flex;justify-content:center;
+  padding:64px 48px 96px;
+}
+.av-content{
+  width:100%;max-width:640px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:56px 64px;
+  font-size:16px;font-weight:300;line-height:1.9;color:var(--grey-2);
+  white-space:pre-wrap;word-break:break-word;
 }
 
 /* ── FOOTER ── */
 footer{
-  padding:32px 48px;background:var(--grey-7);
-  border-top:1px solid var(--grey-6);
+  padding:28px 48px;background:var(--grey-6);
+  border-top:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
 }
 .footer-copy{font-size:10px;font-weight:300;color:var(--grey-4);}
-.footer-link{font-size:10px;color:var(--grey-3);text-decoration:none;letter-spacing:.1em;transition:color .2s;}
+.footer-link{font-size:10px;color:var(--grey-2);text-decoration:none;letter-spacing:.08em;transition:color .2s;}
 .footer-link:hover{color:var(--black);}
 
 /* loading */
-#blog-loading{
-  position:fixed;top:0;left:0;right:0;height:2px;
-  background:var(--black);z-index:9999;
-  width:0;transition:width .4s ease;
-}
+#blog-loading{position:fixed;top:0;left:0;right:0;height:2px;background:var(--black);z-index:9999;width:0;transition:width .4s ease;}
 
+/* ── RESPONSIVE ── */
 @media(max-width:768px){
   header{padding:0 20px;}
-  nav{display:none;}
-  .blog-hero{padding:100px 20px 48px;}
-  .articles-section{padding:40px 20px 64px;}
-  .articles-grid{grid-template-columns:1fr;gap:16px;}
-  .article-card.featured{flex-direction:column;max-height:none;}
-  .article-card.featured .article-img{width:100%;}
-  .article-view-hero{padding:90px 20px 36px;}
-  .article-view-content{padding:36px 20px 64px;}
-  footer{flex-direction:column;gap:12px;padding:24px 20px;text-align:center;}
+  nav a:not(.nav-cta){display:none;}
+  .blog-hero{padding:88px 20px 40px;}
+  .submit-bar{margin:20px;flex-direction:column;gap:12px;text-align:center;}
+  .articles-section{padding:32px 20px 64px;}
+  .articles-grid{grid-template-columns:1fr;}
+  .av-topbar{padding:72px 20px 0;}
+  .av-content-wrap{padding:32px 20px 64px;}
+  .av-content{padding:28px 24px;}
+  footer{flex-direction:column;gap:10px;padding:20px;text-align:center;}
 }
 </style>
 </head>
 <body>
-
 <div id="blog-loading"></div>
 
-<!-- HEADER -->
 <header>
   <a class="logo" href="https://vinipereira13.github.io/figueirense/">
-    <div class="logo-crest">FFC</div>
-    <div>
-      <span class="logo-text">Figueirense</span>
-      <span class="logo-sub">Arquivo de Camisas</span>
-    </div>
+    <div class="logo-img-wrap"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FtYWRhXzIiIGRhdGEtbmFtZT0iQ2FtYWRhIDIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZpZXdCb3g9IjAgMCAyNTA0LjUgMTI2Ny4yNSI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogbm9uZTsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmaWxsOiAjZmZmOwogICAgICB9CgogICAgICAuY2xzLTMgewogICAgICAgIGNsaXAtcGF0aDogdXJsKCNjbGlwcGF0aCk7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgICA8Y2xpcFBhdGggaWQ9ImNsaXBwYXRoIj4KICAgICAgPHJlY3QgY2xhc3M9ImNscy0xIiB4PSIxNjEuNDYiIHk9IjQzMC44NCIgd2lkdGg9IjIxODEuNTgiIGhlaWdodD0iNjc0Ljk1Ii8+CiAgICA8L2NsaXBQYXRoPgogIDwvZGVmcz4KICA8ZyBpZD0iQ2FtYWRhXzEtMiIgZGF0YS1uYW1lPSJDYW1hZGEgMSI+CiAgICA8cmVjdCBjbGFzcz0iY2xzLTIiIHdpZHRoPSIyNTA0LjUiIGhlaWdodD0iMTI2Ny4yNSIgcng9IjE1IiByeT0iMTUiLz4KICAgIDxnPgogICAgICA8cmVjdCB4PSIxNSIgeT0iMTUiIHdpZHRoPSIyNDc0LjUiIGhlaWdodD0iMTIzNy4yNSIvPgogICAgICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9Ijg4LjIzIiB5PSIzNTcuNjEiIHdpZHRoPSIyMzI4LjA0IiBoZWlnaHQ9IjgyMS40MSIvPgogICAgICA8ZyBjbGFzcz0iY2xzLTMiPgogICAgICAgIDxnPgogICAgICAgICAgPHBhdGggZD0iTTIwMS45Myw1ODguNjNjNDEuNTEsMCw3Mi4xMy03LjczLDkxLjg0LTIzLjIsMTkuNzItMTUuNDUsMjkuNTgtNDAuMDgsMjkuNTgtNzMuODJoMTc2LjQydjY3NC45NWgtMTc2LjQydi00MTguNjhjLTMxLjEzLDkuODUtNjQuNywxNC43Ni0xMDAuNjYsMTQuNzZoLTYxLjIzdi0xNzQuMDFoNDAuNDdaIi8+CiAgICAgICAgICA8cGF0aCBkPSJNMjAxLjkzLTEwMS4zYzQxLjUxLDAsNzIuMTMtNy43Myw5MS44NC0yMy4yLDE5LjcyLTE1LjQ1LDI5LjU4LTQwLjA4LDI5LjU4LTczLjgyaDE3Ni40MlY0NzYuNjJoLTE3Ni40MlY1Ny45NWMtMzEuMTMsOS44NS02NC43LDE0Ljc2LTEwMC42NiwxNC43NmgtNjEuMjNWLTEwMS4zaDQwLjQ3WiIvPgogICAgICAgICAgPHBhdGggZD0iTTIwMS45MywxMjc4LjU3YzQxLjUxLDAsNzIuMTMtNy43Myw5MS44NC0yMy4yLDE5LjcyLTE1LjQ1LDI5LjU4LTQwLjA4LDI5LjU4LTczLjgyaDE3Ni40MnY2NzQuOTVoLTE3Ni40MnYtNDE4LjY4Yy0zMS4xMyw5Ljg1LTY0LjcsMTQuNzYtMTAwLjY2LDE0Ljc2aC02MS4yM3YtMTc0LjAxaDQwLjQ3WiIvPgogICAgICAgIDwvZz4KICAgICAgICA8Zz4KICAgICAgICAgIDxwYXRoIGQ9Ik03MTYuNzcsOTk1LjM1YzAsMTEuNiw0LjAzLDE5Ljc4LDEyLjA4LDI0LjU1LDguMDUsNC43OCwyMi44LDcuMTYsNDQuMjgsNy4xNmgyMDUuMjljMjUuNDksMCw0My40My0xLjE4LDUzLjg0LTMuNTgsMTAuMzktMi4zOCwxNS42LTExLjQxLDE1LjYtMjcuMXYtNDIuOTVoLTI3Ny43NWMtMzYuMjMsMC02OC43OC00Ljk0LTk3LjYxLTE0LjgzLTI4Ljg1LTkuODctNTMuMzQtMjMuODYtNzMuNDYtNDEuOTMtMjAuMTMtMTguMDUtMzUuNzItMzkuODgtNDYuNzktNjUuNDUtMTEuMDctMjUuNTYtMTYuNi01NC4zNi0xNi42LTg2LjQxLDAtNzIuMjYsMTkuNjItMTI2LjgsNTguODctMTYzLjYyLDM5LjI1LTM2LjgxLDk2Ljc2LTU1LjIyLDE3Mi41OS01NS4yMmgyMzAuNDVjNzMuMTIsMCwxMjkuOTcsMTcuMDUsMTcwLjU3LDUxLjEzLDQwLjU4LDM0LjEsNjAuODgsODQuNTQsNjAuODgsMTUxLjM1djI1Ni42OWMwLDMyLjA1LTUuMzgsNjEuMzYtMTYuMSw4Ny45NS0xMC43NCwyNi41OS0yNi42Nyw0OS4yNi00Ny44LDY4LTIxLjEzLDE4Ljc2LTQ3LjY0LDMzLjQxLTc5LjUsNDMuOTgtMzEuODcsMTAuNTYtNjguNiwxNS44NS0xMTAuMTksMTUuODVoLTIxMS4zM2MtMzcuNTgsMC03MC42Mi00Ljk1LTk5LjEyLTE0LjgzLTI4LjUyLTkuODctNTIuMzMtMjMuODYtNzEuNDUtNDEuOTMtMTkuMTItMTguMDUtMzMuNTUtMzkuNy00My4yNy02NC45NC05LjczLTI1LjIyLTE0LjU5LTUzLjE4LTE0LjU5LTgzLjg2aDE4MS4xNFpNNzE2Ljc3LDc0MC43MWMwLDE0LjMyLDQuODYsMjQuMzgsMTQuNTksMzAuMTcsOS43Miw1LjgsMjcuMzMsOC42OSw1Mi44Myw4LjY5aDE5Ni4yM2MyNS40OSwwLDQzLjEtMi44OSw1Mi44My04LjY5LDkuNzItNS43OCwxNC41OS0xNS44NSwxNC41OS0zMC4xNywwLTE1LjY4LTQuODctMjYuNDEtMTQuNTktMzIuMjEtOS43My01Ljc4LTI3LjM0LTguNjktNTIuODMtOC42OWgtMTk2LjIzYy0yNS41LDAtNDMuMTEsMi45MS01Mi44Myw4LjY5LTkuNzMsNS44LTE0LjU5LDE2LjU0LTE0LjU5LDMyLjIxWiIvPgogICAgICAgICAgPHBhdGggZD0iTTcxNi43NywzMDUuNDJjMCwxMS42LDQuMDMsMTkuNzgsMTIuMDgsMjQuNTUsOC4wNSw0Ljc4LDIyLjgsNy4xNiw0NC4yOCw3LjE2aDIwNS4yOWMyNS40OSwwLDQzLjQzLTEuMTgsNTMuODQtMy41OCwxMC4zOS0yLjM4LDE1LjYtMTEuNDEsMTUuNi0yNy4xdi00Mi45NWgtMjc3Ljc1Yy0zNi4yMywwLTY4Ljc4LTQuOTQtOTcuNjEtMTQuODMtMjguODUtOS44Ny01My4zNC0yMy44Ni03My40Ni00MS45My0yMC4xMy0xOC4wNS0zNS43Mi0zOS44OC00Ni43OS02NS40NS0xMS4wNy0yNS41Ni0xNi42LTU0LjM2LTE2LjYtODYuNDEsMC03Mi4yNiwxOS42Mi0xMjYuOCw1OC44Ny0xNjMuNjIsMzkuMjUtMzYuODEsOTYuNzYtNTUuMjIsMTcyLjU5LTU1LjIyaDIzMC40NWM3My4xMiwwLDEyOS45NywxNy4wNSwxNzAuNTcsNTEuMTMsNDAuNTgsMzQuMSw2MC44OCw4NC41NCw2MC44OCwxNTEuMzV2MjU2LjY5YzAsMzIuMDUtNS4zOCw2MS4zNi0xNi4xLDg3Ljk1LTEwLjc0LDI2LjU5LTI2LjY3LDQ5LjI2LTQ3LjgsNjgtMjEuMTMsMTguNzYtNDcuNjQsMzMuNDEtNzkuNSw0My45OC0zMS44NywxMC41Ni02OC42LDE1Ljg1LTExMC4xOSwxNS44NWgtMjExLjMzYy0zNy41OCwwLTcwLjYyLTQuOTUtOTkuMTItMTQuODMtMjguNTItOS44Ny01Mi4zMy0yMy44Ni03MS40NS00MS45My0xOS4xMi0xOC4wNS0zMy41NS0zOS43LTQzLjI3LTY0Ljk0LTkuNzMtMjUuMjItMTQuNTktNTMuMTgtMTQuNTktODMuODZoMTgxLjE0Wk03MTYuNzcsNTAuNzhjMCwxNC4zMiw0Ljg2LDI0LjM4LDE0LjU5LDMwLjE3LDkuNzIsNS44LDI3LjMzLDguNjksNTIuODMsOC42OWgxOTYuMjNjMjUuNDksMCw0My4xLTIuODksNTIuODMtOC42OSw5LjcyLTUuNzgsMTQuNTktMTUuODUsMTQuNTktMzAuMTcsMC0xNS42OC00Ljg3LTI2LjQxLTE0LjU5LTMyLjIxLTkuNzMtNS43OC0yNy4zNC04LjY5LTUyLjgzLTguNjloLTE5Ni4yM2MtMjUuNSwwLTQzLjExLDIuOTEtNTIuODMsOC42OS05LjczLDUuOC0xNC41OSwxNi41NC0xNC41OSwzMi4yMVoiLz4KICAgICAgICAgIDxwYXRoIGQ9Ik03MTYuNzcsMTY4NS4yOWMwLDExLjYsNC4wMywxOS43OCwxMi4wOCwyNC41NSw4LjA1LDQuNzgsMjIuOCw3LjE2LDQ0LjI4LDcuMTZoMjA1LjI5YzI1LjQ5LDAsNDMuNDMtMS4xOCw1My44NC0zLjU4LDEwLjM5LTIuMzgsMTUuNi0xMS40MSwxNS42LTI3LjF2LTQyLjk1aC0yNzcuNzVjLTM2LjIzLDAtNjguNzgtNC45NC05Ny42MS0xNC44My0yOC44NS05Ljg3LTUzLjM0LTIzLjg2LTczLjQ2LTQxLjkzLTIwLjEzLTE4LjA1LTM1LjcyLTM5Ljg4LTQ2Ljc5LTY1LjQ1LTExLjA3LTI1LjU2LTE2LjYtNTQuMzYtMTYuNi04Ni40MSwwLTcyLjI2LDE5LjYyLTEyNi44LDU4Ljg3LTE2My42MiwzOS4yNS0zNi44MSw5Ni43Ni01NS4yMiwxNzIuNTktNTUuMjJoMjMwLjQ1YzczLjEyLDAsMTI5Ljk3LDE3LjA1LDE3MC41Nyw1MS4xMyw0MC41OCwzNC4xLDYwLjg4LDg0LjU0LDYwLjg4LDE1MS4zNXYyNTYuNjljMCwzMi4wNS01LjM4LDYxLjM2LTE2LjEsODcuOTUtMTAuNzQsMjYuNTktMjYuNjcsNDkuMjYtNDcuOCw2OC0yMS4xMywxOC43Ni00Ny42NCwzMy40MS03OS41LDQzLjk4LTMxLjg3LDEwLjU2LTY4LjYsMTUuODUtMTEwLjE5LDE1Ljg1aC0yMTEuMzNjLTM3LjU4LDAtNzAuNjItNC45NS05OS4xMi0xNC44My0yOC41Mi05Ljg3LTUyLjMzLTIzLjg2LTcxLjQ1LTQxLjkzLTE5LjEyLTE4LjA1LTMzLjU1LTM5LjctNDMuMjctNjQuOTQtOS43My0yNS4yMi0xNC41OS01My4xOC0xNC41OS04My44NmgxODEuMTRaTTcxNi43NywxNDMwLjY1YzAsMTQuMzIsNC44NiwyNC4zOCwxNC41OSwzMC4xNyw5LjcyLDUuOCwyNy4zMyw4LjY5LDUyLjgzLDguNjloMTk2LjIzYzI1LjQ5LDAsNDMuMS0yLjg5LDUyLjgzLTguNjksOS43Mi01Ljc4LDE0LjU5LTE1Ljg1LDE0LjU5LTMwLjE3LDAtMTUuNjgtNC44Ny0yNi40MS0xNC41OS0zMi4yMS05LjczLTUuNzgtMjcuMzQtOC42OS01Mi44My04LjY5aC0xOTYuMjNjLTI1LjUsMC00My4xMSwyLjkxLTUyLjgzLDguNjktOS43Myw1LjgtMTQuNTksMTYuNTQtMTQuNTksMzIuMjFaIi8+CiAgICAgICAgPC9nPgogICAgICAgIDxnPgogICAgICAgICAgPHBhdGggZD0iTTE0MzguNTUsODYwLjY2aDUwNC43N3YxNzEuMzNoLTY3OC40OHYtMTkyLjFjMC0zMS44Myw0Ljc2LTYwLjkxLDE0LjMxLTg3LjIyLDkuNTMtMjYuMywyMy44NC00OC45Nyw0Mi45Mi02OC4wMSwxOS4wNi0xOS4wMyw0Mi43NC0zMy43NSw3MS4wMi00NC4xMywyOC4yNi0xMC4zOCw2MS4xMy0xNS41OCw5OC42LTE1LjU4aDIyNS44MmMyNS4xOSwwLDQyLjc0LTMuNDYsNTIuNjItMTAuMzgsOS44Ny02LjkxLDE0LjgyLTE4LjY5LDE0LjgyLTM1LjMxcy01LjExLTI5LjI0LTE1LjMzLTM1LjgyYy0xMC4yMi02LjU3LTI4LjYxLTkuODYtNTUuMTgtOS44NmgtMjA4LjQ1Yy0yMS44MSwwLTM2Ljc5LDIuNDMtNDQuOTYsNy4yNy04LjE3LDQuODUtMTIuMjYsMTMuMTYtMTIuMjYsMjQuOTJoLTE4My45M2MwLTMxLjE1LDQuOTMtNTkuNTMsMTQuODItODUuMTQsOS44Ny0yNS42LDI0LjUyLTQ3LjU5LDQzLjk0LTY1Ljk0LDE5LjQxLTE4LjMzLDQzLjU5LTMyLjUzLDcyLjU1LTQyLjU3LDI4Ljk1LTEwLjAzLDYyLjQ5LTE1LjA2LDEwMC42NS0xNS4wNmgyMTQuNThjODEuMDYsMCwxNDQuMjMsMTkuNTcsMTg5LjU1LDU4LjY3LDQ1LjI5LDM5LjExLDY3Ljk1LDkzLjI5LDY3Ljk1LDE2Mi41LDAsMzQuNjItNS44LDY1Ljc4LTE3LjM3LDkzLjQ1LTExLjU5LDI3LjctMjguMSw1MS4wNi00OS41Niw3MC4wOS0yMS40NiwxOS4wNS00Ny41MSwzMy43NS03OC4xNyw0NC4xMy0zMC42NSwxMC4zOC02NS4wNiwxNS41Ny0xMDMuMiwxNS41N2gtMjE1LjZjLTIxLjEyLDAtMzcuNDcsMi43OC00OS4wNSw4LjMxLTExLjU5LDUuNTUtMTcuMzcsMTUuNTgtMTcuMzcsMzAuMTF2MjAuNzdaIi8+CiAgICAgICAgICA8cGF0aCBkPSJNMTQzOC41NSwxNzAuNzNoNTA0Ljc3djE3MS4zM2gtNjc4LjQ4di0xOTIuMWMwLTMxLjgzLDQuNzYtNjAuOTEsMTQuMzEtODcuMjIsOS41My0yNi4zLDIzLjg0LTQ4Ljk3LDQyLjkyLTY4LjAxLDE5LjA2LTE5LjAzLDQyLjc0LTMzLjc1LDcxLjAyLTQ0LjEzLDI4LjI2LTEwLjM4LDYxLjEzLTE1LjU4LDk4LjYtMTUuNThoMjI1LjgyYzI1LjE5LDAsNDIuNzQtMy40Niw1Mi42Mi0xMC4zOCw5Ljg3LTYuOTEsMTQuODItMTguNjksMTQuODItMzUuMzFzLTUuMTEtMjkuMjQtMTUuMzMtMzUuODJjLTEwLjIyLTYuNTctMjguNjEtOS44Ni01NS4xOC05Ljg2aC0yMDguNDVjLTIxLjgxLDAtMzYuNzksMi40My00NC45Niw3LjI3LTguMTcsNC44NS0xMi4yNiwxMy4xNi0xMi4yNiwyNC45MmgtMTgzLjkzYzAtMzEuMTUsNC45My01OS41MywxNC44Mi04NS4xNCw5Ljg3LTI1LjYsMjQuNTItNDcuNTksNDMuOTQtNjUuOTQsMTkuNDEtMTguMzMsNDMuNTktMzIuNTMsNzIuNTUtNDIuNTcsMjguOTUtMTAuMDMsNjIuNDktMTUuMDYsMTAwLjY1LTE1LjA2aDIxNC41OGM4MS4wNiwwLDE0NC4yMywxOS41NywxODkuNTUsNTguNjcsNDUuMjksMzkuMTEsNjcuOTUsOTMuMjksNjcuOTUsMTYyLjUsMCwzNC42Mi01LjgsNjUuNzgtMTcuMzcsOTMuNDUtMTEuNTksMjcuNy0yOC4xLDUxLjA2LTQ5LjU2LDcwLjA5LTIxLjQ2LDE5LjA1LTQ3LjUxLDMzLjc1LTc4LjE3LDQ0LjEzcy02NS4wNiwxNS41Ny0xMDMuMiwxNS41N2gtMjE1LjZjLTIxLjEyLDAtMzcuNDcsMi43OC00OS4wNSw4LjMxLTExLjU5LDUuNTUtMTcuMzcsMTUuNTgtMTcuMzcsMzAuMTF2MjAuNzdaIi8+CiAgICAgICAgICA8cGF0aCBkPSJNMTQzOC41NSwxNTUwLjU5aDUwNC43N3YxNzEuMzNoLTY3OC40OHYtMTkyLjFjMC0zMS44Myw0Ljc2LTYwLjkxLDE0LjMxLTg3LjIyLDkuNTMtMjYuMywyMy44NC00OC45Nyw0Mi45Mi02OC4wMSwxOS4wNi0xOS4wMyw0Mi43NC0zMy43NSw3MS4wMi00NC4xMywyOC4yNi0xMC4zOCw2MS4xMy0xNS41OCw5OC42LTE1LjU4aDIyNS44MmMyNS4xOSwwLDQyLjc0LTMuNDYsNTIuNjItMTAuMzgsOS44Ny02LjkxLDE0LjgyLTE4LjY5LDE0LjgyLTM1LjMxcy01LjExLTI5LjI0LTE1LjMzLTM1LjgyYy0xMC4yMi02LjU3LTI4LjYxLTkuODYtNTUuMTgtOS44NmgtMjA4LjQ1Yy0yMS44MSwwLTM2Ljc5LDIuNDMtNDQuOTYsNy4yNy04LjE3LDQuODUtMTIuMjYsMTMuMTYtMTIuMjYsMjQuOTJoLTE4My45M2MwLTMxLjE1LDQuOTMtNTkuNTMsMTQuODItODUuMTQsOS44Ny0yNS42LDI0LjUyLTQ3LjU5LDQzLjk0LTY1Ljk0LDE5LjQxLTE4LjMzLDQzLjU5LTMyLjUzLDcyLjU1LTQyLjU3LDI4Ljk1LTEwLjAzLDYyLjQ5LTE1LjA2LDEwMC42NS0xNS4wNmgyMTQuNThjODEuMDYsMCwxNDQuMjMsMTkuNTcsMTg5LjU1LDU4LjY3LDQ1LjI5LDM5LjExLDY3Ljk1LDkzLjI5LDY3Ljk1LDE2Mi41LDAsMzQuNjItNS44LDY1Ljc4LTE3LjM3LDkzLjQ1LTExLjU5LDI3LjctMjguMSw1MS4wNi00OS41Niw3MC4wOS0yMS40NiwxOS4wNS00Ny41MSwzMy43NS03OC4xNyw0NC4xMy0zMC42NSwxMC4zOC02NS4wNiwxNS41Ny0xMDMuMiwxNS41N2gtMjE1LjZjLTIxLjEyLDAtMzcuNDcsMi43OC00OS4wNSw4LjMxLTExLjU5LDUuNTUtMTcuMzcsMTUuNTgtMTcuMzcsMzAuMTF2MjAuNzdaIi8+CiAgICAgICAgPC9nPgogICAgICAgIDxnPgogICAgICAgICAgPHBhdGggZD0iTTIwNDUuMiw0NDkuNDNjNDEuNTEsMCw3Mi4xMy03LjczLDkxLjg0LTIzLjIsMTkuNzItMTUuNDUsMjkuNTgtNDAuMDgsMjkuNTgtNzMuODJoMTc2LjQydjY3NC45NWgtMTc2LjQydi00MTguNjhjLTMxLjEzLDkuODUtNjQuNywxNC43Ni0xMDAuNjYsMTQuNzZoLTYxLjIzdi0xNzQuMDFoNDAuNDdaIi8+CiAgICAgICAgICA8cGF0aCBkPSJNMjA0NS4yLTI0MC41YzQxLjUxLDAsNzIuMTMtNy43Myw5MS44NC0yMy4yLDE5LjcyLTE1LjQ1LDI5LjU4LTQwLjA4LDI5LjU4LTczLjgyaDE3Ni40MlYzMzcuNDJoLTE3Ni40MlYtODEuMjVjLTMxLjEzLDkuODUtNjQuNywxNC43Ni0xMDAuNjYsMTQuNzZoLTYxLjIzdi0xNzQuMDFoNDAuNDdaIi8+CiAgICAgICAgICA8cGF0aCBkPSJNMjA0NS4yLDExMzkuMzZjNDEuNTEsMCw3Mi4xMy03LjczLDkxLjg0LTIzLjIsMTkuNzItMTUuNDUsMjkuNTgtNDAuMDgsMjkuNTgtNzMuODJoMTc2LjQydjY3NC45NWgtMTc2LjQydi00MTguNjhjLTMxLjEzLDkuODUtNjQuNywxNC43Ni0xMDAuNjYsMTQuNzZoLTYxLjIzdi0xNzQuMDFoNDAuNDdaIi8+CiAgICAgICAgPC9nPgogICAgICA8L2c+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTEwNS4zLDIzNy44NGgtMTcuMDdsNTYuMzYtMTAzLjA2aDE5LjE2bDU2LjM2LDEwMy4wNmgtMTcuMDdsLTEzLjA0LTIzLjgzaC03MS42NmwtMTMuMDQsMjMuODNaTTE4Mi4yNywxOTkuNjdsLTI3LjU0LTQ5Ljc2aC0xLjEzbC0yNy41NCw0OS43Nmg1Ni4yWiIvPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yMTYuNTgsMTg2LjQ3YzAtMzMuMDEsMjEuNDItNTMuMyw1Ni4yLTUzLjNoMTkuMzJjMzIuNTMsMCw1My4xNCwxNi4yNiw1Ni41Miw0Mi42OGgtMTUuNzhjLTMuMDYtMTcuMjMtMTcuMjMtMjcuNy00MC4yNi0yNy43aC0xOS44MWMtMjUuMTIsMC00MC4yNiwxMy44NS00MC4yNiwzOC4xN3MxNC44MiwzOC4xNyw0MC4yNiwzOC4xN2gxOS44MWMyMy4xOSwwLDM3LjItMTAuNjMsNDAuMjYtMjcuN2gxNS43OGMtMy4zOCwyNi40MS0yMy45OSw0Mi42OC01Ni41Miw0Mi42OGgtMTkuMzJjLTM0Ljc4LDAtNTYuMi0yMC4xMy01Ni4yLTUyLjk4WiIvPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zNTguNzgsMTM0Ljc3aDEwMC4zM3YxNC40OWgtODUuMzV2MjkuNzloNzAuNTN2MTQuNDloLTcwLjUzdjI5Ljc5aDg1LjM1djE0LjQ5aC0xMDAuMzN2LTEwMy4wNloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNDcyLjQ4LDEzNC43N2g3MS4xOGMyOC44MywwLDQ0LjYxLDExLjc2LDQ0LjYxLDMzLjAxLDAsMTUuOTQtOS44MiwyNy4zOC0yNy4yMiwzMC45MmwyNy4yMiwzOS4xM2gtMTguNTJsLTI1Ljc3LTM3LjJoLTM3Ljg0Yy0xMi4wOCwwLTE4LjY4LDQuMDMtMTguNjgsMTEuNzZ2MjUuNDRoLTE0Ljk4di0xMDMuMDZaTTQ4OC41OCwxOTEuMTRjNC45OS0zLjU0LDEwLjE1LTQuOTksMTguMzYtNC45OWgzNy4zNmMxOS40OSwwLDI4LjE4LTYuMTIsMjguMTgtMTguMzZzLTkuMDItMTguNTItMjguMzQtMTguNTJoLTU2LjY5djQxLjg3aDEuMTNaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTcwMy41NywxMzQuNzdoMTcuMDdsLTU2LjM2LDEwMy4wNmgtMTkuMTZsLTU2LjM2LTEwMy4wNmgxNy4wN2w0OC4zMSw4Ny45M2gxLjEzbDQ4LjMxLTg3LjkzWiIvPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik03NzMuMTQsMTMzLjE2aDU1LjRjMzUuNDMsMCw1Ni44NSwyMC4yOSw1Ni44NSw1My40N3MtMjEuMSw1Mi44Mi01Ni44NSw1Mi44MmgtNTUuNGMtMzUuMjcsMC01Ni4yLTE5Ljk3LTU2LjItNTIuODJzMjEuMS01My40Nyw1Ni4yLTUzLjQ3Wk03NzIuOTgsMjI0LjQ3aDU2LjA0YzI0LjY0LDAsNDAuNDItMTIuODgsNDAuNDItMzguMDFzLTE1Ljc4LTM4LjMzLTQwLjQyLTM4LjMzaC01Ni4wNGMtMjUuMTIsMC00MC4xLDEzLjg1LTQwLjEsMzguMzNzMTQuODEsMzguMDEsNDAuMSwzOC4wMVoiLz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg==" alt="Figueirense 1921"></div>
   </a>
   <nav>
     <a href="https://vinipereira13.github.io/figueirense/">Coleção</a>
     <a href="blog.html" class="active">Blog</a>
+    <a href="https://vinipereira13.github.io/figueirense/" class="nav-cta">Ver acervo</a>
   </nav>
 </header>
 
-<!-- LIST VIEW -->
+<!-- ═══ LIST VIEW ═══ -->
 <div id="list-view">
+
   <section class="blog-hero">
-    <div class="blog-hero-label">Histórias & Memórias</div>
-    <h1 class="blog-hero-title">O arquivo<br>que a torcida<br>escreve.</h1>
-    <p class="blog-hero-desc">Colecionadores, ex-patrocinadores, torcedores e pesquisadores contam as histórias por trás das camisas do Figueirense.</p>
+    <div class="hero-eyebrow">Histórias &amp; Memórias</div>
+    <h1 class="blog-hero-title">O arquivo que a torcida escreve.</h1>
+    <p class="blog-hero-desc">Colecionadores, ex-patrocinadores e pesquisadores contam as histórias por trás das camisas do Figueirense.</p>
   </section>
+
+  <div class="submit-bar">
+    <span class="submit-bar-text">Quer publicar um artigo sobre alguma camisa?</span>
+    <a class="submit-bar-btn" href="mailto:contato@arquivofigueirense.com.br">Enviar artigo</a>
+  </div>
 
   <section class="articles-section">
     <div class="articles-count" id="articles-count">Carregando...</div>
     <div class="articles-grid" id="articles-grid"></div>
   </section>
+
 </div>
 
-<!-- SINGLE ARTICLE VIEW -->
+<!-- ═══ SINGLE ARTICLE ═══ -->
 <div id="article-view">
-  <section class="article-view-hero" id="av-hero"></section>
-  <div class="article-view-img" id="av-img" style="display:none"></div>
-  <div class="article-view-content" id="av-content"></div>
+  <div class="av-topbar" id="av-topbar"></div>
+  <div class="av-hero-img" id="av-hero-img" style="display:none"></div>
+  <div class="av-content-wrap">
+    <div class="av-content" id="av-content"></div>
+  </div>
 </div>
 
 <footer>
@@ -271,7 +335,7 @@ function loading(on) {
 }
 
 function formatDate(dt) {
-  return new Date(dt).toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  return new Date(dt).toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' }).toUpperCase();
 }
 
 async function loadArtigos() {
@@ -281,7 +345,8 @@ async function loadArtigos() {
     artigos = await res.json();
     renderList();
   } catch(e) {
-    document.getElementById('articles-grid').innerHTML = `<div class="empty-blog"><div class="empty-blog-icon">📰</div><div class="empty-blog-title">Erro ao carregar</div><div class="empty-blog-desc">${e.message}</div></div>`;
+    document.getElementById('articles-grid').innerHTML =
+      `<div class="empty-blog"><div class="empty-blog-icon">📰</div><div class="empty-blog-title">Erro ao carregar</div><div class="empty-blog-desc">${e.message}</div></div>`;
   } finally {
     loading(false);
   }
@@ -297,33 +362,31 @@ function renderList() {
       <div class="empty-blog">
         <div class="empty-blog-icon">✍️</div>
         <div class="empty-blog-title">Seja o primeiro a escrever</div>
-        <div class="empty-blog-desc">Tem uma história para contar sobre uma camisa do Figueirense?<br>Entre em contato e publique no arquivo.</div>
+        <div class="empty-blog-desc">Tem uma história para contar sobre uma camisa do Figueirense?</div>
       </div>`;
     return;
   }
 
-  document.getElementById('articles-grid').innerHTML = artigos.map((a, i) => {
-    const featured = i === 0;
-    const imgHtml = a.foto_url
-      ? `<img src="${a.foto_url}" alt="${a.titulo}">`
-      : `<div class="article-img-placeholder">📰</div>`;
-    return `
-      <div class="article-card${featured ? ' featured' : ''}" onclick="openArticle('${a.id}')">
-        <div class="article-img">${imgHtml}</div>
-        <div class="article-body">
-          <span class="article-tag">Artigo</span>
-          <div class="article-title">${a.titulo}</div>
-          ${a.subtitulo ? `<div class="article-sub">${a.subtitulo}</div>` : ''}
-          <div class="article-meta">
-            <div>
-              <div class="article-author">${a.autor}</div>
-              ${a.autor_instagram ? `<div class="article-author-ig">@${a.autor_instagram}</div>` : ''}
-            </div>
-            <div class="article-date">${formatDate(a.criado_em)}</div>
+  document.getElementById('articles-grid').innerHTML = artigos.map(a => `
+    <div class="article-card" onclick="openArticle('${a.id}')">
+      <div class="article-img">
+        ${a.foto_url
+          ? `<img src="${a.foto_url}" alt="${a.titulo}">`
+          : `<div class="article-img-ph">⚫</div>`}
+      </div>
+      <div class="article-body">
+        <div class="article-cat">Artigo</div>
+        <div class="article-title">${a.titulo}</div>
+        ${a.subtitulo ? `<div class="article-excerpt">${a.subtitulo}</div>` : ''}
+        <div class="article-footer">
+          <div class="article-author-block">
+            <span class="article-author">${a.autor}</span>
+            ${a.autor_instagram ? `<span class="article-date">@${a.autor_instagram}</span>` : `<span class="article-date">${formatDate(a.criado_em)}</span>`}
           </div>
+          <span class="article-read-more">Ler mais</span>
         </div>
-      </div>`;
-  }).join('');
+      </div>
+    </div>`).join('');
 }
 
 function openArticle(id) {
@@ -332,43 +395,48 @@ function openArticle(id) {
 
   document.getElementById('list-view').style.display = 'none';
   document.getElementById('article-view').style.display = 'block';
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0, behavior: 'instant' });
 
-  document.getElementById('av-hero').innerHTML = `
-    <button class="article-view-back" onclick="backToList()"> Voltar</button>
-    <div class="article-view-tag">Artigo</div>
-    <h1 class="article-view-title">${a.titulo}</h1>
-    ${a.subtitulo ? `<p class="article-view-sub">${a.subtitulo}</p>` : ''}
-    <div class="article-view-meta">
-      <span class="avm-author">${a.autor}</span>
-      ${a.autor_instagram ? `<span class="avm-ig">@${a.autor_instagram}</span>` : ''}
-      <span class="avm-dot"></span>
-      <span class="avm-date">${formatDate(a.criado_em)}</span>
-    </div>`;
+  document.getElementById('av-topbar').innerHTML = `
+    <button class="av-back" onclick="backToList()">Voltar ao blog</button>
+    <div class="av-meta">
+      <span class="av-cat">Artigo</span>
+      <span class="av-dot"></span>
+      <span class="av-date">${formatDate(a.criado_em)}</span>
+      <span class="av-dot"></span>
+      <span class="av-author-name">${a.autor}${a.autor_instagram ? ' · @'+a.autor_instagram : ''}</span>
+    </div>
+    <h1 class="av-title">${a.titulo}</h1>
+    ${a.subtitulo ? `<p class="av-sub">${a.subtitulo}</p>` : ''}
+    <div class="av-sub-divider"></div>`;
 
-  const imgEl = document.getElementById('av-img');
+  const heroImg = document.getElementById('av-hero-img');
   if (a.foto_url) {
-    imgEl.style.display = 'block';
-    imgEl.innerHTML = `<img src="${a.foto_url}" alt="${a.titulo}">`;
+    heroImg.style.display = 'block';
+    heroImg.innerHTML = `<img src="${a.foto_url}" alt="${a.titulo}">`;
   } else {
-    imgEl.style.display = 'none';
+    heroImg.style.display = 'none';
   }
 
   document.getElementById('av-content').textContent = a.conteudo;
+  document.title = `${a.titulo} — Blog Figueirense`;
 }
 
 function backToList() {
   document.getElementById('article-view').style.display = 'none';
   document.getElementById('list-view').style.display = 'block';
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  document.title = 'Blog — Figueirense Arquivo de Camisas';
 }
 
-// Handle URL hash for direct link to article
-const hash = window.location.hash.replace('#', '');
 
-loadArtigos().then(() => {
-  if (hash) openArticle(hash);
+window.addEventListener('scroll', () => {
+  const h = document.querySelector('header');
+  if (window.scrollY > 40) h.classList.add('scrolled');
+  else h.classList.remove('scrolled');
 });
+
+loadArtigos();
 </script>
 </body>
 </html>
