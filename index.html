@@ -311,9 +311,9 @@ footer{padding:36px 48px;background:var(--black);border-top:1px solid rgba(255,2
     </div>
   </div>
 
-  <div class="hero-label fu">Catalogação Histórica · Fundado em 1921</div>
-  <h1 class="hero-title fu d1"><span class="l1">100 anos</span><span class="l2">de camisa</span><span class="l3">preto e branco.</span></h1>
-  <p class="hero-desc fu d2">O maior acervo digital de camisas do Figueirense Futebol Clube. Cada peça, cada fornecedora, cada patrocínio — catalogados com imagens, histórias e detalhes que a memória não pode perder.</p>
+  <div class="hero-label fu" id="txt-hero_label">Catalogação Histórica · Fundado em 1921</div>
+  <h1 class="hero-title fu d1"><span class="l1" id="txt-hero_titulo_1">100 anos</span><span class="l2" id="txt-hero_titulo_2">de camisa</span><span class="l3" id="txt-hero_titulo_3">preto e branco.</span></h1>
+  <p class="hero-desc fu d2" id="txt-hero_desc">O maior acervo digital de camisas do Figueirense Futebol Clube. Cada peça, cada fornecedora, cada patrocínio — catalogados com imagens, histórias e detalhes que a memória não pode perder.</p>
   <div class="hero-stats fu d3">
     <div class="stat"><span class="stat-n" id="hero-total">—</span><span class="stat-l">Camisas</span></div>
     <div class="stat-div"></div>
@@ -366,7 +366,7 @@ footer{padding:36px 48px;background:var(--black);border-top:1px solid rgba(255,2
 
 <!-- TIMELINE -->
 <section class="timeline-section" id="timeline">
-  <div class="tl-hd"><h2 class="tl-title">Linha do Tempo</h2><span class="tl-sub">A história visual do clube em camisas</span></div>
+  <div class="tl-hd"><h2 class="tl-title" id="txt-timeline_titulo">Linha do Tempo</h2><span class="tl-sub" id="txt-timeline_sub">A história visual do clube em camisas</span></div>
   <div class="tl-wrap"><div class="tl-track" id="tl-track"></div></div>
 </section>
 
@@ -385,7 +385,7 @@ footer{padding:36px 48px;background:var(--black);border-top:1px solid rgba(255,2
 </section>
 
 <footer>
-  <span class="fc">© 2024 Arquivo Figueirense · Feito pela torcida, para a torcida</span>
+  <span class="fc" id="txt-footer_copy">© 2024 Arquivo Figueirense · Feito pela torcida, para a torcida</span>
   <div class="fl-links"><a href="#">Contribuir</a><a href="#">Contato</a><a href="#">Sobre</a></div>
 </footer>
 
@@ -907,8 +907,26 @@ function goToTimeline(d){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer();}});
 
 // ═══════════════════════════════════════════
+// TEXTOS DO SITE — carrega e aplica
+// ═══════════════════════════════════════════
+async function loadSiteTextos() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/site_textos?select=id,valor`, { headers: SB_H });
+    if (!res.ok) return;
+    const textos = await res.json();
+    textos.forEach(t => {
+      const el = document.getElementById('txt-' + t.id);
+      if (el) el.textContent = t.valor;
+    });
+  } catch(e) {
+    console.warn('Textos não carregados:', e.message);
+  }
+}
+
+// ═══════════════════════════════════════════
 // INIT — carrega do Supabase
 // ═══════════════════════════════════════════
+loadSiteTextos();
 loadData();
 </script>
 </body>
